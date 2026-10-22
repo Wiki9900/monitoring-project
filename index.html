@@ -78,7 +78,13 @@ main{min-width:0;padding:27px clamp(16px,3vw,38px) 44px}
 </main></div></div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal"><div class="modal-head"><h3 id="modalTitle">Form</h3><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
 <div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+ const supabaseClient = window.supabase.createClient(
+  "https://qafyibvtfwpijfifxmjo.supabase.co",
+  "sb_publishable_xY1n1pvy95sJsyzpoSbg0A_f223hyol"
+);
+ 
 const $=id=>document.getElementById(id);
 const todayISO=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
