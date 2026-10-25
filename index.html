@@ -287,7 +287,20 @@ function printDocument(id){
  .toolbar button{border:0;border-radius:5px;background:#1769aa;color:#fff;padding:9px 18px;font-weight:bold;cursor:pointer}
  @page{size:A4 portrait;margin:0}
  @media print{body{margin:0}.toolbar{display:none}.ba-form{border:1px solid #9bb5c7;margin:0;padding:12mm;min-height:297mm;page-break-after:avoid}}
- </style></head><body>
+ 
+/* Header perusahaan: ukuran logo konsisten dan seluruh teks hitam */
+#printCompany img,.print-company img{
+  width:43px !important;height:43px !important;max-width:43px !important;max-height:43px !important;
+  min-width:43px !important;min-height:43px !important;object-fit:contain !important;flex:0 0 43px !important;
+}
+#printCompany,.print-company{color:#000 !important}
+#printCompany *,.print-company *,.print-company-lines *,.company-lines *{
+  color:#000 !important;
+}
+#printCompany .company-short,.print-company .company-short{
+  color:#000 !important;font-size:24px !important;line-height:1 !important;font-weight:800 !important;
+}
+</style></head><body>
  <div class="toolbar"><button type="button" onclick="window.print()">Cetak / Simpan sebagai PDF</button></div>
  <div class="ba-form"><div class="company">${c.logo?`<img src="${c.logo}">`:''}<div class="company-lines">${c.shortName?`<strong class="company-short">${esc(c.shortName)}</strong>`:''}<b>${esc(c.name||'IDENTITAS PERUSAHAAN BELUM DIISI')}</b><small>${esc(c.address||'')}</small></div></div>
  <h1>${title}</h1><p class="number">FORMULIR DOKUMEN RESMI<br>Nomor: <b>${esc(d.number||'-')}</b></p>
