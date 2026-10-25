@@ -43,6 +43,34 @@ main{min-width:0;padding:27px clamp(16px,3vw,38px) 44px}
 @media(max-width:1050px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-main{grid-template-columns:1fr}.layout{grid-template-columns:210px minmax(0,1fr)}}
 @media(max-width:720px){.layout{display:block}.sidebar{padding:13px;gap:13px}.brand{padding:0 4px}.navlabel,.sidebar-foot{display:none}.nav{display:flex;flex-direction:row;overflow:auto}.nav button{white-space:nowrap;padding:10px}.nav button .ico{display:none}main{padding:19px 13px 35px}.topbar{align-items:flex-start;flex-direction:column}.top-actions{width:100%;justify-content:space-between}.cards{gap:9px}.metric{padding:14px}.metric-value{font-size:19px}.split{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.today{display:none}}
 @media print{@page{size:A4 portrait;margin:12mm}.print-company,.print-company *,.company-lines,.company-lines *,.company,.company *,.inv-brand-name,.inv-brand-name *{color:#111!important}.print-only{display:block!important}#app .sidebar,#app .topbar,#app .top-actions,#app .page:not(.active),#app .modal-overlay,#app .modal,#app .toast,#app .toast-container,#app .auth-screen,#app .toolbar,#app form,#app .form-actions,#app .table-actions,#app .panel-head .btn,#app input[type=file],#app .notice,.screen-only,.no-print{display:none!important}.photo-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8mm}.photo img{aspect-ratio:3/4;height:auto;object-fit:cover}.photo{break-inside:avoid}.print-company{display:flex!important;align-items:center;gap:12px;border-bottom:2px solid #222;padding:0 0 10px;margin-bottom:16px;color:#111!important}.print-company img{width:43px;height:43px;max-width:43px;max-height:43px;object-fit:contain;flex:0 0 43px}.print-company b{font-size:15px}.print-company .company-short{font-size:24px;line-height:1;font-weight:800;letter-spacing:1.2px}.print-company small{display:block;font-size:10px;white-space:pre-line}body{background:white!important;color:#111!important}.sidebar,.top-actions,.toolbar .btn,.table-actions,.no-print{display:none!important}.layout{display:block}main{padding:0}.panel,.metric{break-inside:avoid;box-shadow:none;background:white!important;color:#111!important}.page{display:none!important}.page.active{display:block!important}.table-wrap{overflow:visible}table{font-size:10px}td,th{padding:8px}.bottom-note{display:none}}
+
+/* FINAL FIX: identitas perusahaan konsisten di dashboard dan seluruh template cetak */
+#printCompany{
+  display:flex!important; align-items:flex-start!important; gap:9px!important;
+  min-height:0!important; height:auto!important; margin:0 0 12px!important;
+  padding:0!important; border:0!important; overflow:visible!important;
+}
+#printCompany img{
+  display:block!important; width:43px!important; height:43px!important;
+  min-width:43px!important; min-height:43px!important; max-width:43px!important;
+  max-height:43px!important; object-fit:contain!important; flex:0 0 43px!important;
+}
+#printCompany .print-company-lines{
+  display:flex!important; flex-direction:column!important; align-items:flex-start!important;
+  gap:2px!important; min-width:0!important; line-height:1.12!important;
+}
+#printCompany .company-short{font-size:22px!important;line-height:1!important;font-weight:800!important;letter-spacing:1.2px!important;color:#000!important}
+#printCompany .print-company-lines b{font-size:12px!important;line-height:1.12!important;font-weight:700!important;color:#000!important}
+#printCompany .print-company-lines small{font-size:8px!important;line-height:1.2!important;color:#000!important}
+#printCompany *, .print-company *, .company-lines *, .inv-brand-name *, header .company-lines *{color:#000!important}
+.print-company img, header img, .inv-brand img{
+ width:43px!important;height:43px!important;min-width:43px!important;min-height:43px!important;
+ max-width:43px!important;max-height:43px!important;object-fit:contain!important;flex:0 0 43px!important;
+}
+.print-company, header{align-items:flex-start!important;gap:9px!important}
+.print-company .company-short, header .company-short, .inv-brand-name .inv-short{font-size:22px!important;line-height:1!important;font-weight:800!important;letter-spacing:1.2px!important;color:#000!important}
+.print-company b, header b, .inv-brand-name b, .inv-brand-name .company-country{color:#000!important}
+
 </style>
 </head>
 <body>
@@ -214,7 +242,7 @@ function printWindow(title,html,orientation='portrait'){
  (function(){const start=()=>{const imgs=[...document.images];Promise.all(imgs.map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r}))).then(()=>setTimeout(()=>{window.focus();window.print()},350))};if(document.readyState==='complete')start();else window.addEventListener('load',start);})();
  <\/script></body></html>`);w.document.close();
 }
-function printHeader(){const c=db.company||{};return `<header>${c.logo?`<img src="${c.logo}">`:''}<div class="company-lines">${c.shortName?`<strong class="company-short">${esc(c.shortName)}</strong>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}<small>${esc(c.address||'')}</small></div></header>`}
+function printHeader(){const c=db.company||{};return `<header class="company-print-header">${c.logo?`<img src="${c.logo}" alt="Logo perusahaan">`:''}<div class="company-lines">${c.shortName?`<b class="company-short">${esc(c.shortName)}</b>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}<small>${esc(c.address||'')}</small></div></header>`}
 function printProjectReport(kind){
  const pid=$('reportProject').value||selectedProject,p=project(pid);if(!p)return;
  const photos=(db.photos||[]).filter(x=>x.projectId===pid),items=p.items||[],totalWeight=items.reduce((a,i)=>a+itemWeight(p,i),0),actual=pct(p),target=targetPct(p),deviation=actual-target;
