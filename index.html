@@ -484,7 +484,7 @@ function printInvoiceReport(invoiceId=null){
  .ati-words{margin:3mm 2mm 0;background:#cfe0f5;border-radius:3mm;padding:2.5mm 4mm;font-size:11pt}
  .ati-bank-sign{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin:6mm 2mm 0;min-height:32mm}
  .ati-bank h3,.ati-notes h3{display:inline-block;background:#07396f;color:#fff;border-radius:3mm;padding:1.5mm 3mm;margin:0 0 2mm;font-size:10pt}
- .ati-bank table{border-collapse:collapse;font-size:10.5pt}.ati-bank td{padding:.6mm 1mm}.ati-bank td:first-child{font-weight:bold;min-width:32mm}.ati-sign{text-align:center;font-size:10.5pt;padding-top:1mm}.ati-sign .sign-space{height:19mm}.ati-sign strong{text-decoration:underline;display:block}.ati-notes{margin:3mm 2mm 0;font-size:9.5pt}.ati-notes h3{margin-bottom:1.5mm}.ati-notes ol{margin:0;padding-left:5mm}.ati-footer{position:absolute;left:8mm;right:8mm;bottom:0;height:17mm;border-top:1mm solid #123f78;display:flex;align-items:center;padding:0 2mm;color:#123f78;font-size:15pt;font-weight:700;font-style:italic}
+ .ati-bank-info{font-size:10.5pt;line-height:1.55;padding-left:3mm}.ati-bank-row{display:grid;grid-template-columns:34mm 4mm 1fr;gap:1mm}.ati-bank-row b{font-weight:700}.ati-sign{text-align:left;font-size:10.5pt;padding-top:1mm}.ati-sign .sign-space{height:19mm}.ati-sign strong{text-decoration:underline;display:block}.ati-notes{margin:3mm 2mm 0;font-size:9.5pt}.ati-notes h3{margin-bottom:1.5mm}.ati-notes ol{margin:0;padding-left:5mm}.ati-footer{position:absolute;left:8mm;right:8mm;bottom:0;height:17mm;border-top:1mm solid #123f78;display:flex;align-items:center;padding:0 2mm;color:#123f78;font-size:15pt;font-weight:700;font-style:italic}
  .ati-footer:before{content:"🤝";font-size:22pt;margin-right:3mm;font-style:normal}
  .ati-footer:after{content:"";position:absolute;right:-8mm;bottom:0;width:78mm;height:17mm;background:#003b78;clip-path:polygon(28% 100%,48% 0,100% 0,100% 100%)}
  .ati-footer .footer-text{position:relative;z-index:2}
@@ -496,16 +496,20 @@ function printInvoiceReport(invoiceId=null){
   const v=list[ix],p=project(v.projectId),calc=invoiceCalc(v),wh=withholdings.find(t=>t.id===v.withholding);
   const po=Number(v.poValue||0)||(p?projectContractValue(p):0);
   const pct=v.progressPercent!==undefined&&v.progressPercent!==null?Number(v.progressPercent):(po>0?Number(v.dpp||0)/po*100:100);
-  const pphLabel=wh?.label||'Potongan Pajak Jasa';
+  const pphLabel=wh?.label||'PPh';
+  const pphRate=wh?Number(wh.rate||0)*100:0;
   const companyName='PT. Arka Teknologi Indonesia';
   const invoiceDate=formatDateID(v.date)||'-';
   const poNumber=(p?projectPONumbers(p):'')||v.poNumber||'-';
   const qty=1,unit='Ls';
+  const retentionRate=Number(v.retention||0);
   const dpp=Number(v.dpp||0);
   const due=Number(calc.due||0);
   const pph=Number(calc.wht||0),ret=Number(calc.ret||0),tax=Number(calc.tax||0),paid=Number(v.paid||0);
   const bankRows=[['Nama Bank',cpy.bankName||'-'],['No. Rekening',cpy.bankAccount||'-'],['a.n.',cpy.bankHolder||companyName]];
-  const notes=(v.invoiceNotes||'Mohon pembayaran dilakukan paling lambat sesuai tanggal jatuh tempo invoice ini.\nUntuk konfirmasi pembayaran, harap menghubungi bagian Finance kami.').split('\n').filter(Boolean);
+  const termDays=invoiceTermDays(v);
+  const paymentDeadline=termDays!==null&&termDays>0?`Mohon pembayaran dilakukan paling lambat ${termDays} hari setelah tanggal invoice ini.`:'Mohon pembayaran dilakukan sesuai tanggal jatuh tempo invoice ini.';
+  const notes=[paymentDeadline,'Untuk konfirmasi pembayaran, harap menghubungi bagian Finance kami.'];
   html+=`<section class="ati-invoice">
    <header class="ati-head"><div class="ati-logo" aria-hidden="true"></div><div class="ati-company"><strong>${companyName}</strong><div class="ati-tagline">Engineering • Procurement • Construction</div><div class="ati-contact">${esc(cpy.address||'')}${cpy.phone?'\n☎  '+esc(cpy.phone):''}${cpy.email?'\n✉  '+esc(cpy.email):''}</div></div></header>
    <div class="ati-rule"></div>
@@ -520,13 +524,13 @@ function printInvoiceReport(invoiceId=null){
    <table class="ati-summary"><tbody>
     <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td>${money(dpp)}</td></tr>
     ${tax?`<tr><td colspan="2">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td>${money(tax)}</td></tr>`:''}
-    ${pph?`<tr class="deduction"><td colspan="2">Potongan Pajak Jasa (${esc(pphLabel)})</td><td>(${money(pph)})</td></tr>`:''}
+    <tr class="deduction"><td>Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td>(${money(pph)})</td></tr>
     ${paid?`<tr><td colspan="2">Pembayaran Sebelumnya</td><td>(${money(paid)})</td></tr>`:''}
-    ${ret?`<tr><td class="label">Potongan Retensi (${num(v.retention)}%)</td><td class="calc">(${num(v.retention)}% × ${money(dpp)})</td><td>(${money(ret)})</td></tr>`:''}
+    <tr><td class="label">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td>(${money(ret)})</td></tr>
     <tr class="grand"><td colspan="2">Total Tagihan</td><td>${money(due)}</td></tr>
    </tbody></table>
    <div class="ati-words"><b>Terbilang :</b> &nbsp; <i>${esc(terbilangIDR(due))}</i></div>
-   <div class="ati-bank-sign"><div class="ati-bank"><h3>Informasi Pembayaran :</h3><table>${bankRows.map(r=>`<tr><td>${esc(r[0])}</td><td>:</td><td>${esc(r[1])}</td></tr>`).join('')}</table></div><div class="ati-sign">Hormat kami,<br><b>${companyName}</b><div class="sign-space"></div><strong>${esc(cpy.authorizedName||companyName)}</strong>${esc(cpy.authorizedTitle||'Direktur')}</div></div>
+   <div class="ati-bank-sign"><div class="ati-bank"><h3>Informasi Pembayaran :</h3><div class="ati-bank-info">${bankRows.map(r=>`<div class="ati-bank-row"><b>${esc(r[0])}</b><span>:</span><span>${esc(r[1])}</span></div>`).join('')}</div></div><div class="ati-sign">Hormat kami,<br><b>Atas nama Direktur</b><div class="sign-space"></div><strong>Triwijayanto Desprasetya</strong>Direktur</div></div>
    <div class="ati-notes"><h3>Catatan :</h3><ol>${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ol></div>
    <footer class="ati-footer"><span class="footer-text">Bersama Membangun Negeri</span></footer>
   </section>`;
