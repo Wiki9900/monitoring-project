@@ -481,9 +481,12 @@ function printInvoiceReport(invoiceId=null){
  .ati-items .desc{width:34%}.ati-items .qty{width:12%;text-align:center}.ati-items .unit{width:12%;text-align:center}.ati-items .price{width:21%;text-align:right}.ati-items .amount{width:21%;text-align:right}
  .ati-items .item-row td{height:18mm}.ati-items .contract-row td{background:#cfe3f8!important;font-weight:700}.ati-items .contract-row td:last-child{text-align:right}
  .ati-summary{width:calc(100% - 4mm);margin:0 2mm;border-collapse:collapse;table-layout:fixed}
- .ati-summary td{border:1px solid #555;padding:1.45mm 1.8mm;font-size:9pt;line-height:1.2;vertical-align:middle;min-width:0;overflow-wrap:anywhere;word-break:normal}
- .ati-summary .label{width:34%}.ati-summary .qty{width:12%}.ati-summary .unit{width:12%}.ati-summary .calc{width:21%;text-align:center!important;white-space:normal;overflow-wrap:anywhere}.ati-summary .amount{width:21%;text-align:right;white-space:normal;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+ .ati-summary col.label{width:42%}.ati-summary col.calc{width:35%}.ati-summary col.colon{width:2%}.ati-summary col.amount{width:21%}
+ .ati-summary td{border-top:1px solid #555;border-bottom:1px solid #555;border-left:0;border-right:0;padding:1.45mm 1.8mm;font-size:9pt;line-height:1.2;vertical-align:middle;min-width:0;overflow-wrap:break-word;word-break:normal}
+ .ati-summary td:first-child{border-left:1px solid #555}.ati-summary td:last-child{border-left:1px solid #555;border-right:1px solid #555;text-align:right;white-space:nowrap;overflow-wrap:normal;font-variant-numeric:tabular-nums;padding-left:1mm;padding-right:1.4mm;font-size:8.7pt}
+ .ati-summary .label{text-align:left}.ati-summary .calc{text-align:center!important;white-space:normal;overflow-wrap:anywhere}.ati-summary .colon{text-align:center;padding-left:0;padding-right:0}
  .ati-summary .grand td{background:#06366c!important;color:#fff!important;font-size:13.5pt;font-weight:800;border-color:#06366c;padding:2.3mm}
+ .ati-summary .grand td:last-child{font-size:12pt}
  .ati-words{margin:3mm 2mm 0;background:#cfe0f5!important;border-radius:3mm;padding:2.4mm 4mm;font-size:10.5pt}
  .ati-bank-sign{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin:5.5mm 2mm 0;min-height:32mm}
  .ati-bank h3,.ati-notes h3{display:inline-block;background:#07396f!important;color:#fff!important;border-radius:3mm;padding:1.4mm 3mm;margin:0 0 2mm;font-size:9.5pt}
@@ -541,13 +544,13 @@ function printInvoiceReport(invoiceId=null){
         <tr class="contract-row"><td colspan="4">Nilai PO / Kontrak</td><td>${money(po)}</td></tr>
       </tbody>
     </table>
-    <table class="ati-summary"><tbody>
-      <tr><td class="label" colspan="3"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td class="amount">${money(dpp)}</td></tr>
-      ${tax?`<tr><td class="label" colspan="4">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td class="amount">${money(tax)}</td></tr>`:''}
-      <tr class="deduction"><td class="label" colspan="3">Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td class="amount">(${money(pph)})</td></tr>
-      ${paid?`<tr><td class="label" colspan="4">Pembayaran Sebelumnya</td><td class="amount">(${money(paid)})</td></tr>`:''}
-      <tr><td class="label" colspan="3">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td class="amount">(${money(ret)})</td></tr>
-      <tr class="grand"><td colspan="4">Total Tagihan</td><td class="amount">${money(due)}</td></tr>
+    <table class="ati-summary"><colgroup><col class="label"><col class="calc"><col class="colon"><col class="amount"></colgroup><tbody>
+      <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td class="colon">:</td><td class="amount">${money(dpp)}</td></tr>
+      ${tax?`<tr><td class="label" colspan="3">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td class="amount">${money(tax)}</td></tr>`:''}
+      <tr class="deduction"><td class="label"><span>Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</span></td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td class="colon">:</td><td class="amount">(${money(pph)})</td></tr>
+      <tr><td class="label" colspan="3">Pembayaran Sebelumnya</td><td class="amount">(${money(paid)})</td></tr>
+      <tr><td class="label">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td class="colon">:</td><td class="amount">(${money(ret)})</td></tr>
+      <tr class="grand"><td colspan="3">Total Tagihan</td><td class="amount">${money(due)}</td></tr>
     </tbody></table>
     <div class="ati-words"><b>Terbilang :</b> &nbsp; <i>${esc(terbilangIDR(due))}</i></div>
     <div class="ati-bank-sign">
