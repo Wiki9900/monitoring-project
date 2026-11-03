@@ -477,12 +477,12 @@ function printInvoiceReport(invoiceId=null){
  .ati-intro{margin:0 2mm 3mm;font-size:10pt;line-height:1.4}
  .ati-items{width:calc(100% - 4mm);margin:0 2mm 3.5mm;border-collapse:collapse;table-layout:fixed}
  .ati-items th{background:#06366c!important;color:#fff!important;border:1px solid #fff;padding:2.5mm 2mm;text-align:center;font-size:10pt;font-weight:700;line-height:1.2}
- .ati-items td{border:1px solid #555;padding:2.7mm 2.5mm;font-size:10pt;vertical-align:middle}
+ .ati-items td{border:1px solid #555;padding:2.4mm 1.8mm;font-size:9pt;vertical-align:middle;min-width:0;overflow-wrap:anywhere;word-break:normal;font-variant-numeric:tabular-nums}
  .ati-items .desc{width:34%}.ati-items .qty{width:12%;text-align:center}.ati-items .unit{width:12%;text-align:center}.ati-items .price{width:21%;text-align:right}.ati-items .amount{width:21%;text-align:right}
  .ati-items .item-row td{height:18mm}.ati-items .contract-row td{background:#cfe3f8!important;font-weight:700}.ati-items .contract-row td:last-child{text-align:right}
  .ati-summary{width:calc(100% - 4mm);margin:0 2mm;border-collapse:collapse;table-layout:fixed}
- .ati-summary td{border:1px solid #555;padding:1.55mm 2.5mm;font-size:10pt;line-height:1.22;vertical-align:middle}
- .ati-summary .label{width:34%}.ati-summary .qty{width:12%}.ati-summary .unit{width:12%}.ati-summary .calc{width:21%;text-align:center!important;white-space:nowrap}.ati-summary .amount{width:21%;text-align:right;white-space:nowrap}
+ .ati-summary td{border:1px solid #555;padding:1.45mm 1.8mm;font-size:9pt;line-height:1.2;vertical-align:middle;min-width:0;overflow-wrap:anywhere;word-break:normal}
+ .ati-summary .label{width:34%}.ati-summary .qty{width:12%}.ati-summary .unit{width:12%}.ati-summary .calc{width:21%;text-align:center!important;white-space:normal;overflow-wrap:anywhere}.ati-summary .amount{width:21%;text-align:right;white-space:normal;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
  .ati-summary .grand td{background:#06366c!important;color:#fff!important;font-size:13.5pt;font-weight:800;border-color:#06366c;padding:2.3mm}
  .ati-words{margin:3mm 2mm 0;background:#cfe0f5!important;border-radius:3mm;padding:2.4mm 4mm;font-size:10.5pt}
  .ati-bank-sign{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin:5.5mm 2mm 0;min-height:32mm}
@@ -542,7 +542,7 @@ function printInvoiceReport(invoiceId=null){
       </tbody>
     </table>
     <table class="ati-summary"><tbody>
-      <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="qty"></td><td class="unit"></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td class="amount">${money(dpp)}</td></tr>
+      <tr><td class="label" colspan="3"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td class="amount">${money(dpp)}</td></tr>
       ${tax?`<tr><td class="label" colspan="4">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td class="amount">${money(tax)}</td></tr>`:''}
       <tr class="deduction"><td class="label" colspan="3">Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td class="amount">(${money(pph)})</td></tr>
       ${paid?`<tr><td class="label" colspan="4">Pembayaran Sebelumnya</td><td class="amount">(${money(paid)})</td></tr>`:''}
@@ -552,7 +552,7 @@ function printInvoiceReport(invoiceId=null){
     <div class="ati-words"><b>Terbilang :</b> &nbsp; <i>${esc(terbilangIDR(due))}</i></div>
     <div class="ati-bank-sign">
       <div class="ati-bank"><h3>Informasi Pembayaran :</h3><div class="ati-bank-info">${bankRows.map(r=>`<div class="ati-bank-row"><b>${esc(r[0])}</b><span>:</span><span>${esc(r[1])}</span></div>`).join('')}</div></div>
-      <div class="ati-sign">Hormat kami,<br><b>${esc(companyName)}</b><div class="sign-space"></div><strong>${esc(companyName)}</strong></div>
+      <div class="ati-sign">Hormat kami,<br><b>${esc(companyName)}</b><div class="sign-space"></div><strong>Triwijayanto Desprasetya</strong></div>
     </div>
     <div class="ati-notes"><h3>Catatan :</h3><ol>${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ol></div>
    </section>`;
