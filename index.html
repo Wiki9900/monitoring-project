@@ -445,97 +445,129 @@ function printInvoiceReport(invoiceId=null){
  const filter=$('invoiceProject')?.value||'all';
  const list=(db.invoices||[]).filter(v=>invoiceId?v.id===invoiceId:(filter==='all'||v.projectId===filter));
  if(!list.length){toast('Belum ada invoice untuk dicetak');return}
+
+ const cpy=db.company||{};
  let html=`<style>
  @page{size:A4 portrait;margin:0}
  *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  html,body{margin:0!important;padding:0!important;background:#fff!important;color:#111;font-family:Arial,Helvetica,sans-serif}
- .ati-invoice{position:relative;width:210mm;height:297mm;min-height:297mm;overflow:hidden;background:#fff;padding:8mm 8mm 18mm;page-break-after:always;break-after:page;font-size:10pt;line-height:1.35}
+ body{width:210mm}
+ .ati-invoice{
+   position:relative;width:210mm;height:297mm;min-height:297mm;
+   overflow:hidden;background:#fff;padding:7mm 7mm 18mm;
+   page-break-after:always;break-after:page;font-size:10pt;line-height:1.32;
+ }
  .ati-invoice:last-child{page-break-after:auto;break-after:auto}
- .ati-head{height:31mm;position:relative;display:flex;align-items:center;padding:0 5mm 3mm 5mm;border-bottom:1.1mm solid #123f78;overflow:hidden}
- .ati-head:before{content:"";position:absolute;right:-3mm;top:-15mm;width:75mm;height:48mm;background:#003b78;clip-path:polygon(32% 0,100% 0,100% 100%,0 100%)}
- .ati-head:after{content:"";position:absolute;right:43mm;top:-15mm;width:34mm;height:48mm;background:#75b6f2;clip-path:polygon(40% 0,100% 0,60% 100%,0 100%)}
- .ati-logo{width:30mm;height:25mm;position:relative;z-index:2;flex:0 0 30mm;margin-right:8mm;display:flex;align-items:center;justify-content:center}
- .ati-logo:before{content:"A";font-size:76px;line-height:1;font-weight:900;font-style:italic;letter-spacing:-9px;color:#123f86;text-shadow:5px 3px 0 #fff;transform:scaleX(1.08)}
- .ati-logo:after{content:"";position:absolute;width:26mm;height:2mm;background:#1681c8;transform:rotate(-24deg);left:5mm;bottom:4mm;border-radius:100%}
- .ati-company{position:relative;z-index:2;min-width:0;color:#102f5d}
- .ati-company strong{display:block;font-size:17pt;font-weight:800;line-height:1.15;color:#123b73}
- .ati-company .ati-tagline{font-size:11pt;font-weight:600;color:#111;margin:1mm 0 2mm}
- .ati-company .ati-contact{font-size:9.5pt;line-height:1.35;color:#111;white-space:pre-line}
- .ati-rule{height:.5mm;background:#123f78;margin:0 0 3.5mm}
- .ati-top{display:grid;grid-template-columns:1fr 77mm;gap:8mm;align-items:start;margin:0 2mm 3mm}
- .ati-title{background:linear-gradient(110deg,#07366c,#00509a);color:#fff;border-radius:3mm;padding:1mm 5mm;font-size:27pt;line-height:1.5;font-weight:800;letter-spacing:.5px}
- .ati-meta{display:grid;grid-template-columns:32mm 4mm 1fr;gap:1.5mm 1mm;padding-top:2mm;font-size:11pt}
- .ati-meta .colon{text-align:center}.ati-meta .value{white-space:nowrap}
- .ati-recipient{margin:0 2mm 4mm;font-size:11pt;line-height:1.45}
- .ati-recipient .to{font-weight:bold}.ati-recipient .client{font-size:14pt;font-weight:800}
- .ati-subject{display:grid;grid-template-columns:20mm 4mm 1fr;align-items:start;margin:0 2mm 3mm;padding-bottom:2mm;border-bottom:1px solid #123f78;font-size:11pt}
- .ati-subject strong{color:#123f78;font-size:12pt}
- .ati-intro{margin:0 2mm 3mm;font-size:10.5pt;line-height:1.45}
- .ati-items{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 2mm 4mm;width:calc(100% - 4mm)}
- .ati-items th{background:#06366c;color:#fff;border:1px solid #fff;padding:3mm 2mm;text-align:center;font-size:10.5pt;font-weight:700;line-height:1.25}
- .ati-items td{border:1px solid #555;padding:3mm 2.5mm;font-size:10.5pt;vertical-align:middle}
- .ati-items .desc{width:32%}.ati-items .qty{width:13%;text-align:center}.ati-items .unit{width:13%;text-align:center}.ati-items .price{width:21%;text-align:center}.ati-items .amount{width:21%;text-align:center}
- .ati-items .item-row td{height:17mm}.ati-items .contract-row td{background:#cfe3f8;font-weight:bold}.ati-items .contract-row td:last-child{text-align:right}
+ /* Header memakai header Laporan Progress yang sama dengan template printHeader() */
+ .ati-report-header{width:100%;margin:0 0 5mm;padding:0 0 3mm;border-bottom:1.2px solid #123f78}
+ .ati-report-header .company-print-top{display:flex;align-items:flex-start;gap:9px;min-height:43px}
+ .ati-report-header img{display:block;width:43px;height:43px;min-width:43px;min-height:43px;max-width:43px;max-height:43px;object-fit:cover;flex:0 0 43px}
+ .ati-report-header .company-lines{display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.12;min-width:0}
+ .ati-report-header .company-short{font-size:22px;line-height:1;font-weight:800;letter-spacing:1.2px;color:#000}
+ .ati-report-header .company-lines b{display:block;font-size:12px;line-height:1.12;color:#000}
+ .ati-report-header .company-print-address{display:block;width:100%;margin:3px 0 0;font-size:8px;line-height:1.2;white-space:pre-line;color:#000}
+ .ati-top{display:grid;grid-template-columns:minmax(0,1fr) 76mm;gap:7mm;align-items:center;margin:0 2mm 4mm}
+ .ati-title{background:linear-gradient(110deg,#07366c,#00509a);color:#fff;border-radius:3mm;padding:1.5mm 5mm;font-size:27pt;line-height:1.35;font-weight:800;letter-spacing:.5px}
+ .ati-meta{display:grid;grid-template-columns:31mm 4mm minmax(0,1fr);gap:1.4mm 1mm;padding-top:1mm;font-size:10.5pt}
+ .ati-meta .colon{text-align:center}.ati-meta .value{white-space:normal;overflow-wrap:anywhere}
+ .ati-recipient{margin:0 2mm 3.5mm;font-size:10.5pt;line-height:1.4}
+ .ati-recipient .to{font-weight:700}.ati-recipient .client{font-size:14pt;font-weight:800}
+ .ati-subject{display:grid;grid-template-columns:20mm 4mm minmax(0,1fr);align-items:start;margin:0 2mm 3mm;padding-bottom:2mm;border-bottom:1px solid #123f78;font-size:10.5pt}
+ .ati-subject strong{color:#123f78;font-size:11.5pt}
+ .ati-intro{margin:0 2mm 3mm;font-size:10pt;line-height:1.4}
+ .ati-items{width:calc(100% - 4mm);margin:0 2mm 3.5mm;border-collapse:collapse;table-layout:fixed}
+ .ati-items th{background:#06366c!important;color:#fff!important;border:1px solid #fff;padding:2.5mm 2mm;text-align:center;font-size:10pt;font-weight:700;line-height:1.2}
+ .ati-items td{border:1px solid #555;padding:2.7mm 2.5mm;font-size:10pt;vertical-align:middle}
+ .ati-items .desc{width:34%}.ati-items .qty{width:12%;text-align:center}.ati-items .unit{width:12%;text-align:center}.ati-items .price{width:21%;text-align:right}.ati-items .amount{width:21%;text-align:right}
+ .ati-items .item-row td{height:18mm}.ati-items .contract-row td{background:#cfe3f8!important;font-weight:700}.ati-items .contract-row td:last-child{text-align:right}
  .ati-summary{width:calc(100% - 4mm);margin:0 2mm;border-collapse:collapse;table-layout:fixed}
- .ati-summary td{border:1px solid #555;padding:1.5mm 2.5mm;font-size:10.5pt;line-height:1.25}
- .ati-summary td:first-child{width:76%}.ati-summary td:last-child{width:24%;text-align:right;white-space:nowrap}
- .ati-summary .calc{text-align:center!important;width:22%;white-space:nowrap}.ati-summary .label{width:54%}.ati-summary .deduction td:last-child{color:#111}
- .ati-summary .grand td{background:#06366c;color:#fff;font-size:14pt;font-weight:800;border-color:#06366c;padding:2.5mm}
- .ati-words{margin:3mm 2mm 0;background:#cfe0f5;border-radius:3mm;padding:2.5mm 4mm;font-size:11pt}
- .ati-bank-sign{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin:6mm 2mm 0;min-height:32mm}
- .ati-bank h3,.ati-notes h3{display:inline-block;background:#07396f;color:#fff;border-radius:3mm;padding:1.5mm 3mm;margin:0 0 2mm;font-size:10pt}
- .ati-bank-info{font-size:10.5pt;line-height:1.55;padding-left:3mm}.ati-bank-row{display:grid;grid-template-columns:34mm 4mm 1fr;gap:1mm}.ati-bank-row b{font-weight:700}.ati-sign{text-align:left;font-size:10.5pt;padding-top:1mm}.ati-sign .sign-space{height:19mm}.ati-sign strong{text-decoration:underline;display:block}.ati-notes{margin:3mm 2mm 0;font-size:9.5pt}.ati-notes h3{margin-bottom:1.5mm}.ati-notes ol{margin:0;padding-left:5mm}.ati-footer{position:absolute;left:8mm;right:8mm;bottom:0;height:17mm;border-top:1mm solid #123f78;display:flex;align-items:center;padding:0 2mm;color:#123f78;font-size:15pt;font-weight:700;font-style:italic}
- .ati-footer:before{content:"🤝";font-size:22pt;margin-right:3mm;font-style:normal}
- .ati-footer:after{content:"";position:absolute;right:-8mm;bottom:0;width:78mm;height:17mm;background:#003b78;clip-path:polygon(28% 100%,48% 0,100% 0,100% 100%)}
+ .ati-summary td{border:1px solid #555;padding:1.55mm 2.5mm;font-size:10pt;line-height:1.22;vertical-align:middle}
+ .ati-summary .label{width:54%}.ati-summary .calc{width:22%;text-align:center!important;white-space:nowrap}.ati-summary td:last-child{width:24%;text-align:right;white-space:nowrap}
+ .ati-summary .grand td{background:#06366c!important;color:#fff!important;font-size:13.5pt;font-weight:800;border-color:#06366c;padding:2.3mm}
+ .ati-words{margin:3mm 2mm 0;background:#cfe0f5!important;border-radius:3mm;padding:2.4mm 4mm;font-size:10.5pt}
+ .ati-bank-sign{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin:5.5mm 2mm 0;min-height:32mm}
+ .ati-bank h3,.ati-notes h3{display:inline-block;background:#07396f!important;color:#fff!important;border-radius:3mm;padding:1.4mm 3mm;margin:0 0 2mm;font-size:9.5pt}
+ .ati-bank-info{font-size:10pt;line-height:1.5;padding-left:3mm}.ati-bank-row{display:grid;grid-template-columns:32mm 4mm minmax(0,1fr);gap:1mm}
+ .ati-bank-row b{font-weight:700}.ati-sign{text-align:left;font-size:10pt;padding-top:1mm}.ati-sign .sign-space{height:18mm}.ati-sign strong{text-decoration:underline;display:block}
+ .ati-notes{margin:2.5mm 2mm 0;font-size:9pt}.ati-notes h3{margin-bottom:1.2mm}.ati-notes ol{margin:0;padding-left:5mm}
+ .ati-footer{position:absolute;left:7mm;right:7mm;bottom:0;height:16mm;border-top:1px solid #123f78;display:flex;align-items:center;padding:0 2mm;color:#123f78;font-size:13pt;font-weight:700;font-style:italic}
+ .ati-footer:before{content:"🤝";font-size:20pt;margin-right:3mm;font-style:normal}
+ .ati-footer:after{content:"";position:absolute;right:-7mm;bottom:0;width:70mm;height:16mm;background:#003b78;clip-path:polygon(28% 100%,48% 0,100% 0,100% 100%)}
  .ati-footer .footer-text{position:relative;z-index:2}
- @media screen{.ati-invoice{margin:12px auto;box-shadow:0 2px 18px #0002;transform-origin:top center}}
+ @media screen{.ati-invoice{margin:12px auto;box-shadow:0 2px 18px #0002}}
  @media print{.ati-invoice{margin:0!important;box-shadow:none!important}button,.screen-only,.no-print{display:none!important}}
  </style>`;
- const cpy=db.company||{};
+
  for(let ix=0;ix<list.length;ix++){
-  const v=list[ix],p=project(v.projectId),calc=invoiceCalc(v),wh=withholdings.find(t=>t.id===v.withholding);
-  const po=Number(v.poValue||0)||(p?projectContractValue(p):0);
-  const pct=v.progressPercent!==undefined&&v.progressPercent!==null?Number(v.progressPercent):(po>0?Number(v.dpp||0)/po*100:100);
-  const pphLabel=wh?.label||'PPh';
-  const pphRate=wh?Number(wh.rate||0)*100:0;
-  const companyName='PT. Arka Teknologi Indonesia';
-  const invoiceDate=formatDateID(v.date)||'-';
-  const poNumber=(p?projectPONumbers(p):'')||v.poNumber||'-';
-  const qty=1,unit='Ls';
-  const retentionRate=Number(v.retention||0);
-  const dpp=Number(v.dpp||0);
-  const due=Number(calc.due||0);
-  const pph=Number(calc.wht||0),ret=Number(calc.ret||0),tax=Number(calc.tax||0),paid=Number(v.paid||0);
-  const bankRows=[['Nama Bank',cpy.bankName||'-'],['No. Rekening',cpy.bankAccount||'-'],['a.n.',cpy.bankHolder||companyName]];
-  const termDays=invoiceTermDays(v);
-  const paymentDeadline=termDays!==null&&termDays>0?`Mohon pembayaran dilakukan paling lambat ${termDays} hari setelah tanggal invoice ini.`:'Mohon pembayaran dilakukan sesuai tanggal jatuh tempo invoice ini.';
-  const notes=[paymentDeadline,'Untuk konfirmasi pembayaran, harap menghubungi bagian Finance kami.'];
-  html+=`<section class="ati-invoice">
-   <header class="ati-head"><div class="ati-logo" aria-hidden="true"></div><div class="ati-company"><strong>${companyName}</strong><div class="ati-tagline">Engineering • Procurement • Construction</div><div class="ati-contact">${esc(cpy.address||'')}${cpy.phone?'\n☎  '+esc(cpy.phone):''}${cpy.email?'\n✉  '+esc(cpy.email):''}</div></div></header>
-   <div class="ati-rule"></div>
-   <div class="ati-top"><div class="ati-title">INVOICE</div><div class="ati-meta"><span>No. Invoice</span><span class="colon">:</span><span class="value">${esc(v.number||'-')}</span><span>Tanggal</span><span class="colon">:</span><span class="value">${invoiceDate}</span><span>Ref. PO/Kontrak</span><span class="colon">:</span><span class="value">${esc(poNumber)}</span></div></div>
-   <div class="ati-recipient"><div class="to">Kepada Yth.:</div><div class="client">${esc(p?.client||'-')}</div><div>${esc(p?.clientAddress||'')}</div><div>${p?.clientContact?'Up. '+esc(p.clientContact):''}</div></div>
-   <div class="ati-subject"><span>Perihal</span><span>:</span><strong>Tagihan Pekerjaan ${esc(p?.name||v.note||'')}</strong></div>
-   <div class="ati-intro">Dengan hormat,<br>Bersama ini kami sampaikan tagihan atas pekerjaan tersebut dengan rincian sebagai berikut:</div>
-   <table class="ati-items"><thead><tr><th class="desc">Uraian</th><th class="qty">Jumlah</th><th class="unit">Satuan</th><th class="price">Harga Satuan<br>(Rp)</th><th class="amount">Total Harga<br>(Rp)</th></tr></thead><tbody>
-    <tr class="item-row"><td>${esc(v.note||('Pekerjaan '+(p?.name||'Instalasi MEP')))}</td><td class="qty">${qty}</td><td class="unit">${unit}</td><td class="price">${money(po)}</td><td class="amount">${money(po)}</td></tr>
-    <tr class="contract-row"><td colspan="4">Nilai PO / Kontrak</td><td>${money(po)}</td></tr>
-   </tbody></table>
-   <table class="ati-summary"><tbody>
-    <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td>${money(dpp)}</td></tr>
-    ${tax?`<tr><td colspan="2">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td>${money(tax)}</td></tr>`:''}
-    <tr class="deduction"><td>Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td>(${money(pph)})</td></tr>
-    ${paid?`<tr><td colspan="2">Pembayaran Sebelumnya</td><td>(${money(paid)})</td></tr>`:''}
-    <tr><td class="label">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td>(${money(ret)})</td></tr>
-    <tr class="grand"><td colspan="2">Total Tagihan</td><td>${money(due)}</td></tr>
-   </tbody></table>
-   <div class="ati-words"><b>Terbilang :</b> &nbsp; <i>${esc(terbilangIDR(due))}</i></div>
-   <div class="ati-bank-sign"><div class="ati-bank"><h3>Informasi Pembayaran :</h3><div class="ati-bank-info">${bankRows.map(r=>`<div class="ati-bank-row"><b>${esc(r[0])}</b><span>:</span><span>${esc(r[1])}</span></div>`).join('')}</div></div><div class="ati-sign">Hormat kami,<br><b>Atas nama Direktur</b><div class="sign-space"></div><strong>Triwijayanto Desprasetya</strong>Direktur</div></div>
-   <div class="ati-notes"><h3>Catatan :</h3><ol>${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ol></div>
-   <footer class="ati-footer"><span class="footer-text">Bersama Membangun Negeri</span></footer>
-  </section>`;
+   const v=list[ix],p=project(v.projectId),calc=invoiceCalc(v),wh=withholdings.find(t=>t.id===v.withholding);
+   const po=Number(v.poValue||0)||(p?projectContractValue(p):0);
+   const pct=v.progressPercent!==undefined&&v.progressPercent!==null?Number(v.progressPercent):(po>0?Number(v.dpp||0)/po*100:100);
+   const pphLabel=wh?.label||'PPh';
+   const pphRate=wh?Number(wh.rate||0)*100:0;
+   const companyName=cpy.name||'PT. Arka Teknologi Indonesia';
+   const invoiceDate=formatDateID(v.date)||'-';
+   const poNumber=(p?projectPONumbers(p):'')||v.poNumber||'-';
+   const qty=1,unit='Ls';
+   const retentionRate=Number(v.retention||0);
+   const dpp=Number(v.dpp||0);
+   const due=Number(calc.due||0);
+   const pph=Number(calc.wht||0),ret=Number(calc.ret||0),tax=Number(calc.tax||0),paid=Number(v.paid||0);
+   const bankRows=[['Nama Bank',cpy.bankName||'-'],['No. Rekening',cpy.bankAccount||'-'],['a.n.',cpy.bankHolder||companyName]];
+   const termDays=invoiceTermDays(v);
+   const paymentDeadline=termDays!==null&&termDays>0?`Mohon pembayaran dilakukan paling lambat ${termDays} hari setelah tanggal invoice ini.`:'Mohon pembayaran dilakukan sesuai tanggal jatuh tempo invoice ini.';
+   const notes=[paymentDeadline,'Untuk konfirmasi pembayaran, harap menghubungi bagian Finance kami.'];
+
+   const reportHeader=printHeader().replace('company-print-header','ati-report-header');
+   html+=`<section class="ati-invoice">
+    ${reportHeader}
+    <div class="ati-top">
+      <div class="ati-title">INVOICE</div>
+      <div class="ati-meta">
+        <span>No. Invoice</span><span class="colon">:</span><span class="value">${esc(v.number||'-')}</span>
+        <span>Tanggal</span><span class="colon">:</span><span class="value">${invoiceDate}</span>
+        <span>Ref. PO/Kontrak</span><span class="colon">:</span><span class="value">${esc(poNumber)}</span>
+      </div>
+    </div>
+    <div class="ati-recipient">
+      <div class="to">Kepada Yth.:</div>
+      <div class="client">${esc(p?.client||'-')}</div>
+      <div>${esc(p?.clientAddress||'')}</div>
+      <div>${p?.clientContact?'Up. '+esc(p.clientContact):''}</div>
+    </div>
+    <div class="ati-subject"><span>Perihal</span><span>:</span><strong>Tagihan Pekerjaan ${esc(p?.name||v.note||'')}</strong></div>
+    <div class="ati-intro">Dengan hormat,<br>Bersama ini kami sampaikan tagihan atas pekerjaan tersebut dengan rincian sebagai berikut:</div>
+    <table class="ati-items">
+      <colgroup><col style="width:34%"><col style="width:12%"><col style="width:12%"><col style="width:21%"><col style="width:21%"></colgroup>
+      <thead><tr><th>Uraian</th><th>Jumlah</th><th>Satuan</th><th>Harga Satuan<br>(Rp)</th><th>Total Harga<br>(Rp)</th></tr></thead>
+      <tbody>
+        <tr class="item-row"><td>${esc(v.note||('Pekerjaan '+(p?.name||'Instalasi MEP')))}</td><td class="qty">${qty}</td><td class="unit">${unit}</td><td class="price">${money(po)}</td><td class="amount">${money(po)}</td></tr>
+        <tr class="contract-row"><td colspan="4">Nilai PO / Kontrak</td><td>${money(po)}</td></tr>
+      </tbody>
+    </table>
+    <table class="ati-summary"><tbody>
+      <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td>${money(dpp)}</td></tr>
+      ${tax?`<tr><td colspan="2">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td>${money(tax)}</td></tr>`:''}
+      ${pph?`<tr class="deduction"><td>Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td>(${money(pph)})</td></tr>`:''}
+      ${paid?`<tr><td colspan="2">Pembayaran Sebelumnya</td><td>(${money(paid)})</td></tr>`:''}
+      <tr><td class="label">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td>(${money(ret)})</td></tr>
+      <tr class="grand"><td colspan="2">Total Tagihan</td><td>${money(due)}</td></tr>
+    </tbody></table>
+    <div class="ati-words"><b>Terbilang :</b> &nbsp; <i>${esc(terbilangIDR(due))}</i></div>
+    <div class="ati-bank-sign">
+      <div class="ati-bank"><h3>Informasi Pembayaran :</h3><div class="ati-bank-info">${bankRows.map(r=>`<div class="ati-bank-row"><b>${esc(r[0])}</b><span>:</span><span>${esc(r[1])}</span></div>`).join('')}</div></div>
+      <div class="ati-sign">Hormat kami,<br><b>Atas nama Direktur</b><div class="sign-space"></div><strong>${esc(cpy.directorName||'Triwijayanto Desprasetya')}</strong>Direktur</div>
+    </div>
+    <div class="ati-notes"><h3>Catatan :</h3><ol>${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ol></div>
+    <footer class="ati-footer"><span class="footer-text">Bersama Membangun Negeri</span></footer>
+   </section>`;
  }
- printWindow('Invoice',html,'portrait');
+ const w=window.open('','_blank');
+ if(!w){toast('Izinkan pop-up untuk membuka atau mencetak invoice');return}
+ w.document.open();
+ w.document.write(`<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Invoice</title>${html}</head><body><script>
+ (function(){const start=()=>{const imgs=[...document.images];Promise.all(imgs.map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r}))).then(()=>setTimeout(()=>{window.focus();window.print()},300))};if(document.readyState==='complete')start();else window.addEventListener('load',start);})();
+ <\/script></body></html>`);
+ w.document.close();
 }
 function viewDrawing(id){const d=(db.drawings||[]).find(x=>x.id===id);if(!d)return;try{const parts=d.data.split(',');const mime=(parts[0].match(/data:([^;]+)/)||[])[1]||'application/pdf';const binary=atob(parts[1]);const bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);const url=URL.createObjectURL(new Blob([bytes],{type:mime}));const w=window.open(url,'_blank');if(!w){URL.revokeObjectURL(url);toast('Izinkan pop-up untuk membuka shop drawing');return}toast('Shop drawing dibuka di tab baru. Gunakan kontrol PDF untuk zoom atau cetak.');setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(e){toast('PDF tidak dapat dibuka. Coba upload ulang file shop drawing.')}}
 function deletePhoto(id){if(confirm('Hapus foto ini?')){db.photos=(db.photos||[]).filter(x=>x.id!==id);save()}}function deleteDrawing(id){if(confirm('Hapus shop drawing ini?')){db.drawings=(db.drawings||[]).filter(x=>x.id!==id);save()}}function deleteMap(id){if(confirm('Hapus titik mapping?')){db.maps=(db.maps||[]).filter(x=>x.id!==id);save()}}
