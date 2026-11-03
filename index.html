@@ -482,7 +482,7 @@ function printInvoiceReport(invoiceId=null){
  .ati-items .item-row td{height:18mm}.ati-items .contract-row td{background:#cfe3f8!important;font-weight:700}.ati-items .contract-row td:last-child{text-align:right}
  .ati-summary{width:calc(100% - 4mm);margin:0 2mm;border-collapse:collapse;table-layout:fixed}
  .ati-summary td{border:1px solid #555;padding:1.55mm 2.5mm;font-size:10pt;line-height:1.22;vertical-align:middle}
- .ati-summary .label{width:54%}.ati-summary .calc{width:22%;text-align:center!important;white-space:nowrap}.ati-summary td:last-child{width:24%;text-align:right;white-space:nowrap}
+ .ati-summary .label{width:34%}.ati-summary .qty{width:12%}.ati-summary .unit{width:12%}.ati-summary .calc{width:21%;text-align:center!important;white-space:nowrap}.ati-summary .amount{width:21%;text-align:right;white-space:nowrap}
  .ati-summary .grand td{background:#06366c!important;color:#fff!important;font-size:13.5pt;font-weight:800;border-color:#06366c;padding:2.3mm}
  .ati-words{margin:3mm 2mm 0;background:#cfe0f5!important;border-radius:3mm;padding:2.4mm 4mm;font-size:10.5pt}
  .ati-bank-sign{display:grid;grid-template-columns:1fr 1fr;gap:10mm;margin:5.5mm 2mm 0;min-height:32mm}
@@ -490,10 +490,7 @@ function printInvoiceReport(invoiceId=null){
  .ati-bank-info{font-size:10pt;line-height:1.5;padding-left:3mm}.ati-bank-row{display:grid;grid-template-columns:32mm 4mm minmax(0,1fr);gap:1mm}
  .ati-bank-row b{font-weight:700}.ati-sign{text-align:left;font-size:10pt;padding-top:1mm}.ati-sign .sign-space{height:18mm}.ati-sign strong{text-decoration:underline;display:block}
  .ati-notes{margin:2.5mm 2mm 0;font-size:9pt}.ati-notes h3{margin-bottom:1.2mm}.ati-notes ol{margin:0;padding-left:5mm}
- .ati-footer{position:absolute;left:7mm;right:7mm;bottom:0;height:16mm;border-top:1px solid #123f78;display:flex;align-items:center;padding:0 2mm;color:#123f78;font-size:13pt;font-weight:700;font-style:italic}
- .ati-footer:before{content:"🤝";font-size:20pt;margin-right:3mm;font-style:normal}
- .ati-footer:after{content:"";position:absolute;right:-7mm;bottom:0;width:70mm;height:16mm;background:#003b78;clip-path:polygon(28% 100%,48% 0,100% 0,100% 100%)}
- .ati-footer .footer-text{position:relative;z-index:2}
+
  @media screen{.ati-invoice{margin:12px auto;box-shadow:0 2px 18px #0002}}
  @media print{.ati-invoice{margin:0!important;box-shadow:none!important}button,.screen-only,.no-print{display:none!important}}
  </style>`;
@@ -506,11 +503,11 @@ function printInvoiceReport(invoiceId=null){
    const pphRate=wh?Number(wh.rate||0)*100:0;
    const companyName=cpy.name||'PT. Arka Teknologi Indonesia';
    const invoiceDate=formatDateID(v.date)||'-';
-   const poNumber=(p?projectPONumbers(p):'')||v.poNumber||'-';
+   const poNumber=(p?.poNumber||v.poNumber||'-');
    const qty=1,unit='Ls';
    const retentionRate=Number(v.retention||0);
    const dpp=Number(v.dpp||0);
-   const due=Number(calc.due||0);
+   const due=Math.round(Number(calc.due||0));
    const pph=Number(calc.wht||0),ret=Number(calc.ret||0),tax=Number(calc.tax||0),paid=Number(v.paid||0);
    const bankRows=[['Nama Bank',cpy.bankName||'-'],['No. Rekening',cpy.bankAccount||'-'],['a.n.',cpy.bankHolder||companyName]];
    const termDays=invoiceTermDays(v);
@@ -545,20 +542,19 @@ function printInvoiceReport(invoiceId=null){
       </tbody>
     </table>
     <table class="ati-summary"><tbody>
-      <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td>${money(dpp)}</td></tr>
-      ${tax?`<tr><td colspan="2">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td>${money(tax)}</td></tr>`:''}
-      ${pph?`<tr class="deduction"><td>Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td>(${money(pph)})</td></tr>`:''}
-      ${paid?`<tr><td colspan="2">Pembayaran Sebelumnya</td><td>(${money(paid)})</td></tr>`:''}
-      <tr><td class="label">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td>(${money(ret)})</td></tr>
-      <tr class="grand"><td colspan="2">Total Tagihan</td><td>${money(due)}</td></tr>
+      <tr><td class="label"><b>Tagihan ${num(pct)}% dari Nilai PO</b></td><td class="qty"></td><td class="unit"></td><td class="calc">(${num(pct)}% × ${money(po)})</td><td class="amount">${money(dpp)}</td></tr>
+      ${tax?`<tr><td class="label" colspan="4">PPN (${esc(taxes.find(t=>t.id===v.vat)?.label||'PPN')})</td><td class="amount">${money(tax)}</td></tr>`:''}
+      <tr class="deduction"><td class="label" colspan="3">Potongan Pajak Jasa (${esc(pphLabel)} - ${num(pphRate)}%)</td><td class="calc">(${num(pphRate)}% × ${money(Number(v.pphBase??dpp))})</td><td class="amount">(${money(pph)})</td></tr>
+      ${paid?`<tr><td class="label" colspan="4">Pembayaran Sebelumnya</td><td class="amount">(${money(paid)})</td></tr>`:''}
+      <tr><td class="label" colspan="3">Potongan Retensi (${num(retentionRate)}%)</td><td class="calc">(${num(retentionRate)}% × ${money(dpp)})</td><td class="amount">(${money(ret)})</td></tr>
+      <tr class="grand"><td colspan="4">Total Tagihan</td><td class="amount">${money(due)}</td></tr>
     </tbody></table>
     <div class="ati-words"><b>Terbilang :</b> &nbsp; <i>${esc(terbilangIDR(due))}</i></div>
     <div class="ati-bank-sign">
       <div class="ati-bank"><h3>Informasi Pembayaran :</h3><div class="ati-bank-info">${bankRows.map(r=>`<div class="ati-bank-row"><b>${esc(r[0])}</b><span>:</span><span>${esc(r[1])}</span></div>`).join('')}</div></div>
-      <div class="ati-sign">Hormat kami,<br><b>Atas nama Direktur</b><div class="sign-space"></div><strong>${esc(cpy.directorName||'Triwijayanto Desprasetya')}</strong>Direktur</div>
+      <div class="ati-sign">Hormat kami,<br><b>${esc(companyName)}</b><div class="sign-space"></div><strong>${esc(companyName)}</strong></div>
     </div>
     <div class="ati-notes"><h3>Catatan :</h3><ol>${notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ol></div>
-    <footer class="ati-footer"><span class="footer-text">Bersama Membangun Negeri</span></footer>
    </section>`;
  }
  const w=window.open('','_blank');
