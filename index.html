@@ -146,7 +146,7 @@ main{min-width:0;padding:27px clamp(16px,3vw,38px) 44px}
  <section class="page" id="page-invoices"><div class="cards" id="invoiceMetrics"></div><div class="toolbar"><select class="search" id="invoiceProject" onchange="renderInvoices()"></select><div class="screen-only" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" onclick="openInvoiceModal()">＋ Buat Invoice</button><button class="btn light" onclick="printInvoiceReport()">Cetak Invoice + Kwitansi</button></div></div><div class="panel table-panel"><div class="table-head"><div><h3>Invoice & Pembayaran</h3><p class="hint">Pajak, retensi, tagihan, dan status pembayaran</p></div><button class="btn light small" onclick="printInvoiceReport()">Cetak Invoice / Kwitansi</button></div><div class="table-wrap"><table><thead><tr><th>No. invoice</th><th>Proyek</th><th>Tanggal</th><th>DPP</th><th>Pajak</th><th>Retensi</th><th>Total tagihan</th><th>Terbayar</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="invoiceTable"></tbody></table></div></div><p class="bottom-note">Pengaturan pajak adalah alat bantu pencatatan. Pastikan jenis, tarif, dan perlakuan pajak sesuai ketentuan yang berlaku serta status PKP proyek.</p></section>
  <section class="page" id="page-rfi"><div class="toolbar"><select class="search" id="rfiProject"></select><button class="btn" onclick="openRFIModal()">＋ RFI Baru</button><button class="btn light" onclick="printRFIRegister()">Cetak Register RFI</button></div><div class="notice">Form Request for Information untuk koordinasi MEP: Electrical, Mechanical/HVAC, Plumbing, Fire Protection, dan koordinasi antar-disiplin. Catat referensi gambar/spesifikasi, pertanyaan, solusi usulan, dampak biaya/waktu, serta jawaban resmi.</div><div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>No. RFI</th><th>Tanggal</th><th>Proyek</th><th>Disiplin</th><th>Perihal</th><th>Jawaban dibutuhkan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="rfiTable"></tbody></table></div></div></section>
  <section class="page" id="page-tamkur"><div class="toolbar"><select class="search" id="tamkurProject" onchange="renderTamkur()"></select><button class="btn" onclick="openTamkurModal()">＋ Buat / Edit TAMKUR</button><button class="btn light" onclick="printTamkurRegister()">Cetak Rekap TAMKUR</button></div><div class="notice">Rekap volume Kontrak/PO dibanding volume aktual/revisi. Selisih volume dan nilai tambah/kurang dihitung otomatis per item. Referensi RFI dicatat sebagai dasar klarifikasi; perubahan tetap perlu persetujuan sesuai prosedur kontrak.</div><div class="cards" id="tamkurMetrics"></div><div class="panel table-panel"><div class="table-head"><div><h3>Rekap Kerja Tambah Kurang</h3><p class="hint">Nilai bersih TAMKUR = total nilai Kontrak/PO dikurangi total nilai pekerjaan aktual.</p></div></div><div class="table-wrap"><table><thead><tr><th>Proyek / Kontrak-PO</th><th>Tanggal</th><th>Total Kontrak/PO</th><th>Total Aktual</th><th>Kerja Tambah</th><th>Kerja Kurang</th><th>Total TAMKUR (Kontrak − Aktual)</th><th>Referensi RFI</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="tamkurTable"></tbody></table></div></div></section>
- <section class="page" id="page-documents"><div class="toolbar"><select class="search" id="documentProject" onchange="renderDocuments()"></select><button class="btn" onclick="openDocumentModal()">＋ Buat Berita Acara</button></div><div class="cards" id="documentMetrics"></div><div class="panel table-panel"><div class="table-head"><div><h3>Dokumen Serah Terima & Pengetesan</h3><p class="hint">Buat, tinjau, dan cetak dokumen proyek</p></div><button class="btn light small" onclick="window.print()">Cetak / PDF</button></div><div class="table-wrap"><table><thead><tr><th>Nomor dokumen</th><th>Jenis</th><th>Proyek</th><th>Tanggal</th><th>Lokasi / sistem</th><th>Hasil / status</th><th>Aksi</th></tr></thead><tbody id="documentsTable"></tbody></table></div></div></section>
+ <section class="page" id="page-documents"><div class="toolbar"><select class="search" id="documentProject" onchange="renderDocuments()"></select><button class="btn" onclick="openDocumentModal()">＋ Buat Berita Acara</button></div><div class="cards" id="documentMetrics"></div><div class="panel table-panel"><div class="table-head"><div><h3>Dokumen Serah Terima & Pengetesan</h3><p class="hint">Buat, tinjau, dan cetak dokumen proyek</p></div><span class="hint">Gunakan tombol Cetak pada baris dokumen untuk menghasilkan form resmi A4.</span></div><div class="table-wrap"><table><thead><tr><th>Nomor dokumen</th><th>Jenis</th><th>Proyek</th><th>Tanggal</th><th>Lokasi / sistem</th><th>Hasil / status</th><th>Aksi</th></tr></thead><tbody id="documentsTable"></tbody></table></div></div></section>
  <div class="bottom-note">Monitoring Project · Project control workspace · Simpan perubahan secara berkala dan ekspor cadangan data.</div>
 </main></div></div>
 <div id="authGate"><div class="auth-card"><div class="brand" style="padding:0;margin-bottom:18px;color:var(--ink)"><div class="logo" style="background:var(--site-primary);color:white">⌂</div><div><h1 style="font-size:18px;margin:0">Monitoring Project</h1><small style="color:var(--muted)">Login & Sinkronisasi Cloud</small></div></div><h2 id="authTitle">Hubungkan Supabase</h2><p id="authIntro">Masukkan Project URL dan publishable key Supabase. Gunakan key publik (publishable/anon), jangan pernah gunakan service_role atau secret key di browser.</p><form id="configForm"><div class="field"><label>Supabase Project URL</label><input id="supabaseUrl" type="url" required placeholder="https://xxxx.supabase.co"></div><div class="field"><label>Publishable key / anon public key</label><input id="supabaseKey" required autocomplete="off" placeholder="sb_publishable_... atau anon public key"></div><button class="btn" type="submit">Simpan Konfigurasi</button></form><div id="authSection" hidden><div class="divider" style="height:1px;background:var(--line);margin:22px 0"></div><form id="authForm"><div class="field"><label>Email</label><input id="authEmail" type="email" required autocomplete="username" placeholder="nama@email.com"></div><div class="field"><label>Password (minimal 6 karakter)</label><input id="authPassword" type="password" required minlength="6" autocomplete="current-password" placeholder="Password akun"></div><label id="importLocalLabel" style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);line-height:1.5" hidden><input id="importLocal" type="checkbox" checked style="margin-top:3px">Jika akun ini belum memiliki data cloud, gunakan data yang tersimpan di browser ini sebagai data awal.</label><button class="btn" type="submit" id="authSubmit">Login</button><button class="btn light" type="button" id="signupBtn">Buat akun baru</button></form></div><div id="authMessage" class="auth-message" role="status">Siapkan konfigurasi Supabase untuk memulai.</div><p class="auth-small">Data tiap akun dipisahkan oleh autentikasi dan aturan RLS tabel <b>project_workspace</b>.</p></div></div>
@@ -576,90 +576,52 @@ function openMap(){let maps=(db.maps||[]).filter(x=>x.projectId===($('reportProj
 function openDocumentModal(id=null){let d=id?db.documents.find(x=>x.id===id):{projectId:selectedProject,type:'BAST',number:`BA-${new Date().getFullYear()}-${String(db.documents.length+1).padStart(3,'0')}`,date:todayISO(),location:'',parties:'',scope:'',result:'Draft',notes:''};editingId=id;modalKind='document';openModal(id?'Edit Berita Acara':'Buat Berita Acara',`<form id="documentForm"><div class="form-grid"><div class="field"><label>Jenis dokumen</label><select name="type"><option value="BAST" ${d.type==='BAST'?'selected':''}>Berita Acara Serah Terima (BAST)</option><option value="TEST" ${d.type==='TEST'?'selected':''}>Berita Acara Pengetesan</option></select></div><div class="field"><label>Nomor dokumen</label><input name="number" required value="${esc(d.number)}"></div><div class="field"><label>Proyek</label><select name="projectId">${projectOptions(d.projectId)}</select></div><div class="field"><label>Tanggal</label><input name="date" type="date" required value="${d.date}"></div><div class="field"><label>Lokasi / sistem yang diuji</label><input name="location" required value="${esc(d.location)}" placeholder="Contoh: Sistem HVAC lantai 2"></div><div class="field"><label>Hasil / status</label><select name="result">${['Draft','Lulus','Perlu perbaikan','Diserahterimakan'].map(s=>`<option ${d.result===s?'selected':''}>${s}</option>`).join('')}</select></div><div class="field full"><label>Pihak terkait (pemberi dan penerima / saksi)</label><input name="parties" value="${esc(d.parties||'')}" placeholder="Nama, jabatan, perusahaan"></div><div class="field full"><label>Lingkup pekerjaan / item pengetesan</label><textarea name="scope">${esc(d.scope||'')}</textarea></div><div class="field full"><label>Catatan, hasil ukur, temuan, tindak lanjut</label><textarea name="notes">${esc(d.notes||'')}</textarea></div></div><div class="form-actions"><button type="button" class="btn light" onclick="closeModal()">Batal</button><button class="btn">Simpan Dokumen</button></div></form>`);$('documentForm').onsubmit=e=>{e.preventDefault();let f=Object.fromEntries(new FormData(e.target));if(id)Object.assign(db.documents.find(x=>x.id===id),f);else db.documents.push({...f,id:uid()});save();closeModal();toast('Berita acara tersimpan')}}
 function editDocument(id){openDocumentModal(id)}function deleteDocument(id){if(confirm('Hapus dokumen ini?')){db.documents=(db.documents||[]).filter(x=>x.id!==id);save()}}
 function printDocument(id){
- const d=db.documents.find(x=>x.id===id);if(!d)return;
- const p=project(d.projectId),c=db.company||{};
+ const d=(db.documents||[]).find(x=>x.id===id);if(!d)return;
+ const p=project(d.projectId)||{},c=db.company||{};
  const w=window.open('','_blank');if(!w){toast('Izinkan pop-up untuk mencetak dokumen');return}
- const title=d.type==='BAST'?'BERITA ACARA SERAH TERIMA':'BERITA ACARA PENGETESAN';
- const rows=[
-  ['Nama Proyek',p?.name||'-'],['Klien / Pemberi Kerja',p?.client||'-'],
-  ['Lokasi / Sistem',d.location||'-'],['Lingkup Pekerjaan / Item Pengetesan',d.scope||'-'],
-  ['Hasil / Status',d.result||'Draft'],['Catatan / Hasil Ukur / Tindak Lanjut',d.notes||'-'],
-  ['Pihak Terkait',d.parties||'-']
- ];
+ const isBast=d.type==='BAST';
+ const title=isBast?'BERITA ACARA SERAH TERIMA PEKERJAAN':'BERITA ACARA PENGETESAN';
+ const dateText=d.date?new Date(d.date+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}):'-';
+ const safe=(v)=>esc(v||'-');
+ const scopeRows=String(d.scope||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ const scopeContent=scopeRows.length?`<ol class="scope-list">${scopeRows.map(x=>`<li>${safe(x)}</li>`).join('')}</ol>`:'<div class="blank-line">....................................................................................................................</div><div class="blank-line">....................................................................................................................</div>';
+ const statusLabel=d.result||'Draft';
+ const resultHeading=isBast?'KONDISI DAN STATUS SERAH TERIMA':'HASIL PENGETESAN';
+ const intro=isBast
+  ?`Pada hari ini, ${safe(dateText)}, bertempat di ${safe(d.location)}, para pihak yang bertanda tangan di bawah ini menerangkan bahwa telah dilaksanakan serah terima pekerjaan untuk proyek tersebut di bawah ini.`
+  :`Pada hari ini, ${safe(dateText)}, telah dilaksanakan pengetesan/pemeriksaan terhadap sistem atau pekerjaan ${safe(d.location)} pada proyek tersebut di bawah ini. Hasil pemeriksaan dicatat dalam berita acara ini.`;
  w.document.open();
- w.document.write(`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>${esc(d.number)}</title>
+ w.document.write(`<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safe(d.number)} - ${title}</title>
  <style>
- @page{size:A4 portrait;margin:0}*{box-sizing:border-box}
- html,body{width:210mm;min-height:297mm}body{font:11px Arial,sans-serif;color:#1c2d3a;margin:0;line-height:1.5;background:#fff}.ba-form{border:1px solid #9bb5c7;padding:12mm;min-height:297mm;width:210mm;margin:0 auto;display:flex;flex-direction:column;background:#fff;box-shadow:0 2px 10px #0001}
- .company{display:block;border-bottom:2px solid #222;padding:0 0 8px;margin-bottom:18px;min-height:0;color:#000}.company-top{display:flex;align-items:flex-start;gap:9px;min-height:43px}.company-address{display:block;font-size:8px;line-height:1.2;color:#000;white-space:pre-line;margin:3px 0 0;text-align:left}
- .company img{width:43px;height:43px;min-width:43px;min-height:43px;max-width:43px;max-height:43px;object-fit:contain;flex:0 0 43px}
- .company b{font-size:12px;line-height:1.12;color:#000;display:block}.company .company-short{font-size:22px;line-height:1;font-weight:800;letter-spacing:1.2px;color:#000}.company .company-country{font-size:12px;line-height:1.12;color:#000}.company small{display:block;font-size:8px;line-height:1.2;color:#000;white-space:pre-line;text-align:left}
- h1{text-align:center;color:#111;font-size:19px;letter-spacing:.4px;margin:18px 0 5px}
- .number{text-align:center;font-size:11px;margin:0 0 22px}
- .intro{margin:0 0 12px}
- .meta{display:grid;grid-template-columns:1fr 1fr;border:1px solid #9bb5c7;margin:12px 0 18px}
- .meta div{padding:8px;border-bottom:1px solid #d5e0e8}.meta div:nth-child(odd){border-right:1px solid #d5e0e8}
- .ba-form h1{border-bottom:1px solid #333;padding:0 0 10px;margin-top:22px}.ba-form .number{font-size:10px;letter-spacing:.4px}.ba-form table{border:1px solid #7893a5}.ba-form td:first-child{width:34%;font-weight:700;background:#edf4f8;color:#294d63}.ba-form td{min-height:34px;overflow-wrap:anywhere}.ba-form .closing{margin-top:18px;text-align:justify}
- table{width:100%;border-collapse:collapse;margin:10px 0 20px}
- td{border:1px solid #91a9b9;padding:9px 10px;vertical-align:top}
- td:first-child{width:31%;font-weight:bold;background:#edf4f8;color:#294d63}
- .closing{margin-top:18px}
- .sign{display:flex;align-items:stretch;justify-content:space-between;gap:22px;margin-top:42px;break-inside:avoid}
- .sign>div{width:50%;text-align:center;min-height:160px;display:flex;flex-direction:column}
- .sign .space{height:100px;flex:0 0 100px}
- .sign .line{border-top:1px solid #333;padding-top:6px;margin-top:auto;min-height:27px}
- .toolbar{display:flex;justify-content:center;margin:0 0 12px}
- .toolbar button{border:0;border-radius:5px;background:#1769aa;color:#fff;padding:9px 18px;font-weight:bold;cursor:pointer}
- @media print{@page{size:A4 portrait;margin:0}html,body{width:210mm;min-height:297mm;margin:0!important;padding:0!important;background:#fff!important}.toolbar{display:none!important}.ba-form{width:210mm;min-height:297mm;height:auto;border:1px solid #9bb5c7;margin:0;padding:12mm;page-break-after:avoid;box-shadow:none;background:#fff!important}.company,.meta,table,.sign{break-inside:avoid;page-break-inside:avoid}h1,.number{break-after:avoid;page-break-after:avoid}body>*:not(.ba-form):not(script){display:none!important} .ba-form{display:flex!important}}
- 
-/* Header Berita Acara mengikuti susunan invoice: logo dan nama di atas, alamat di bawah rata kiri dari logo */
-.company{display:block!important;text-align:left!important;color:#000!important;border-bottom:2px solid #222!important;padding:0 0 8px!important;margin:0 0 18px!important}
-.company-top{display:flex!important;align-items:flex-start!important;gap:9px!important;min-height:43px!important;text-align:left!important}
-.company img{display:block!important;width:43px!important;height:43px!important;min-width:43px!important;min-height:43px!important;max-width:43px!important;max-height:43px!important;object-fit:cover!important;flex:0 0 43px!important}
-.company .company-lines{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:2px!important;text-align:left!important}
-.company .company-address,.company>small{display:block!important;width:100%!important;margin:3px 0 0!important;padding:0!important;text-align:left!important;text-indent:0!important;white-space:pre-line!important;font-size:8px!important;line-height:1.2!important;color:#000!important}
-.company .company-short{font-size:22px!important;line-height:1!important;font-weight:800!important;letter-spacing:1.2px!important;color:#000!important}
-.company .company-lines b{display:block!important;font-size:12px!important;line-height:1.12!important;color:#000!important}
- .company .company-lines b.company-short{font-size:22px!important;line-height:1!important;font-weight:800!important;letter-spacing:1.2px!important;color:#000!important}
-.company .company-country{font-size:12px!important;line-height:1.12!important;color:#000!important}
-/* NORMALIZED COMPANY HEADER: same logo/name/address geometry as report and invoice */
-.company{display:block!important;width:100%!important;box-sizing:border-box!important;text-align:left!important;margin:0 0 18px!important;padding:0 0 8px!important}
-.company-top{display:flex!important;align-items:flex-start!important;gap:9px!important;width:100%!important;min-height:43px!important;margin:0!important;padding:0!important;box-sizing:border-box!important}
-.company-top>img{display:block!important;width:43px!important;height:43px!important;min-width:43px!important;min-height:43px!important;max-width:43px!important;max-height:43px!important;object-fit:cover!important;flex:0 0 43px!important;margin:0!important;padding:0!important}
-.company .company-lines{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;gap:2px!important;min-width:0!important;margin:0!important;padding:0!important;text-align:left!important}
-.company .company-address{display:block!important;width:100%!important;margin:3px 0 0!important;padding:0!important;text-align:left!important;text-indent:0!important;white-space:pre-line!important;box-sizing:border-box!important}
-
-
-
-/* PENGATURAN WARNA CETAK GLOBAL: dipakai oleh semua laporan dalam aplikasi */
-@media print {
-  html, body, #app, .page, .panel, .metric { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  th, thead th { background-color: #E3EDF4 !important; color: #173E5C !important; }
-  tbody tr:nth-child(even) td { background-color: #F8FBFD !important; }
-  .heading, .meta div:nth-child(4n+1), .meta div:nth-child(4n+2), .stat,
-  .trend-panel, .bank-note, .receipt-amount, .invoice-total,
-  .inv-pay-now td, .inv-totalbar { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  .bar { background-color: #9DD7C5 !important; }
-  .bar.alt { background-color: #2E2E88 !important; }
-  .fill { background-color: #2E2E88 !important; }
-  .status.on { background-color: #E0F5E9 !important; color: #20784D !important; }
-  .status.wait { background-color: #FFF2D7 !important; color: #976319 !important; }
-  .status.late { background-color: #FFEBEB !important; color: #B43D45 !important; }
-  .invoice-total, .inv-pay-now td, .inv-totalbar { background-color: #C7DBF3 !important; }
-  .weekly-print-bar.target, .weekly-print-legend .target-key { background-color: #9DD7C5 !important; }
-  .weekly-print-bar.actual, .weekly-print-legend .actual-key { background-color: #247CAF !important; }
-  svg, svg * { print-color-adjust: exact !important; -webkit-print-color-adjust: exact !important; }
-}
-</style></head><body>
+ @page{size:A4 portrait;margin:15mm 17mm 16mm}*{box-sizing:border-box}html,body{margin:0;padding:0;background:#fff;color:#17232d}body{font:10.5pt/1.55 Arial,Helvetica,sans-serif}.toolbar{display:flex;justify-content:center;padding:14px;background:#eef2f5}.toolbar button{border:0;border-radius:5px;background:#174d70;color:#fff;padding:10px 20px;font-weight:700;cursor:pointer}.ba-form{width:100%;max-width:176mm;margin:0 auto;padding:0;background:#fff}.company{display:block;border-bottom:2px solid #1e3545;padding:0 0 9px;margin:0 0 20px}.company-top{display:flex;align-items:flex-start;gap:10px;min-height:43px}.company img{width:43px;height:43px;object-fit:contain;flex:0 0 43px}.company-lines{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.company-lines b{display:block;font-size:11pt;line-height:1.15;color:#111}.company-lines b.company-short{font-size:22px;line-height:1;font-weight:800;letter-spacing:1.2px}.company-address{display:block;margin:4px 0 0;font-size:8pt;line-height:1.3;white-space:pre-line;color:#303b43}.doc-kicker{text-align:center;text-transform:uppercase;letter-spacing:1.4px;font-size:8pt;font-weight:700;color:#637482;margin:0 0 4px}.doc-title{text-align:center;font-size:17pt;line-height:1.25;letter-spacing:.35px;margin:0 0 5px;color:#142d3e}.doc-number{text-align:center;font-size:9.5pt;margin:0 0 22px}.doc-number strong{border-bottom:1px solid #6f7e88;padding:0 8px 3px}.section-title{font-size:9.5pt;text-transform:uppercase;letter-spacing:.45px;font-weight:700;color:#173e58;border-bottom:1px solid #9aabb7;padding:0 0 5px;margin:18px 0 9px}.intro{text-align:justify;margin:0 0 12px}.identity{width:100%;border-collapse:collapse;margin:8px 0 14px}.identity td{border:1px solid #aab8c1;padding:7px 9px;vertical-align:top}.identity td:first-child{width:32%;font-weight:700;background:#f0f4f6;color:#263f50}.scope-list{margin:4px 0 8px;padding-left:22px}.scope-list li{padding:2px 0}.blank-line{min-height:23px;border-bottom:1px dotted #9eabb4;margin:4px 0}.result-box{border:1px solid #aab8c1;padding:10px 12px;min-height:42px}.result-status{font-weight:700;color:#173e58}.notes{white-space:pre-wrap;min-height:30px}.closing{text-align:justify;margin:17px 0 0}.signatures{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px;break-inside:avoid;page-break-inside:avoid}.signature{text-align:center;min-height:150px;display:flex;flex-direction:column}.signature .role{font-weight:700;text-transform:uppercase;font-size:9pt;min-height:30px}.signature .company-name{font-size:8.5pt;min-height:20px}.signature .sign-space{height:78px}.signature .sign-name{border-top:1px solid #263640;padding-top:5px;margin-top:auto;font-weight:700}.signature .sign-title{font-size:8pt;color:#46545e}.doc-footer{border-top:1px solid #c3cdd3;margin-top:22px;padding-top:6px;display:flex;justify-content:space-between;font-size:7.5pt;color:#697780}.screen-hint{text-align:center;color:#647480;font-size:8pt;margin:8px 0 0}
+ @media print{.toolbar,.screen-hint{display:none!important}html,body{width:auto;min-height:0;background:#fff!important}.ba-form{width:100%;max-width:none;margin:0;padding:0}.company,.identity,.result-box,.signatures{break-inside:avoid;page-break-inside:avoid}.section-title{break-after:avoid;page-break-after:avoid}a{color:inherit;text-decoration:none}}
+ </style></head><body>
  <div class="toolbar"><button type="button" onclick="window.print()">Cetak / Simpan sebagai PDF</button></div>
- <div class="ba-form"><div class="company"><div class="company-top">${c.logo?`<img src="${c.logo}">`:''}<div class="company-lines">${c.shortName?`<strong class="company-short">${esc(c.shortName)}</strong>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}</div></div><small class="company-address">${esc(c.address||'Alamat perusahaan belum diisi')}</small></div>
- <h1>${title}</h1><p class="number">FORMULIR DOKUMEN RESMI<br>Nomor: <b>${esc(d.number||'-')}</b></p>
- <p class="intro">Pada tanggal <b>${esc(d.date||'-')}</b>, telah dilakukan ${d.type==='BAST'?'serah terima pekerjaan':'pengetesan pekerjaan'} dengan rincian sebagai berikut:</p>
- <table><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td></tr>`).join('')}</tbody></table>
- <p class="closing">Demikian berita acara ini dibuat dengan sebenar-benarnya untuk digunakan sebagaimana mestinya.</p>
- <div class="sign"><div><b>PIHAK PELAKSANA</b><div class="space"></div><div class="line">${esc(p?.pic||'Nama dan tanda tangan')}</div></div><div><b>PIHAK KLIEN / PENERIMA</b><div class="space"></div><div class="line">${esc(d.parties||'Nama dan tanda tangan')}</div></div></div>
- <script>window.onload=()=>{const imgs=[...document.images];Promise.all(imgs.map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r}))).then(()=>setTimeout(()=>window.print(),250))};<\/script>
+ <main class="ba-form">
+  <header class="company"><div class="company-top">${c.logo?`<img src="${c.logo}" alt="Logo perusahaan">`:''}<div class="company-lines">${c.shortName?`<b class="company-short">${safe(c.shortName)}</b>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}</div></div><small class="company-address">${safe(c.address||'Alamat perusahaan belum diisi')}</small></header>
+  <p class="doc-kicker">Dokumen pelaksanaan pekerjaan</p><h1 class="doc-title">${title}</h1><p class="doc-number">Nomor: <strong>${safe(d.number)}</strong></p>
+  <p class="intro">${intro}</p>
+  <h2 class="section-title">I. Identitas pekerjaan</h2>
+  <table class="identity"><tbody>
+   <tr><td>Nama Proyek</td><td>${safe(p.name)}</td></tr>
+   <tr><td>Pemberi Kerja / Klien</td><td>${safe(p.client)}</td></tr>
+   <tr><td>Lokasi / Area</td><td>${safe(d.location)}</td></tr>
+   <tr><td>Tanggal Pelaksanaan</td><td>${safe(dateText)}</td></tr>
+   <tr><td>Nomor Kontrak / PO</td><td>${safe(p.contractNo||p.poNumber||'-')}</td></tr>
+   <tr><td>Penanggung Jawab Proyek</td><td>${safe(p.pic)}</td></tr>
+  </tbody></table>
+  <h2 class="section-title">II. Lingkup pekerjaan / item pemeriksaan</h2>
+  ${scopeContent}
+  <h2 class="section-title">III. ${resultHeading}</h2>
+  <div class="result-box"><div><span class="result-status">Status: ${safe(statusLabel)}</span></div><div class="notes">${safe(d.notes)}</div></div>
+  <h2 class="section-title">IV. Pernyataan dan persetujuan</h2>
+  <p class="closing">${isBast?'Dengan ditandatanganinya berita acara ini, para pihak menyatakan bahwa pekerjaan sebagaimana diuraikan di atas telah diperiksa dan diserahterimakan sesuai kondisi yang tercantum dalam dokumen ini.':'Dengan ditandatanganinya berita acara ini, para pihak menyatakan bahwa kegiatan pengetesan telah dilaksanakan dan hasilnya dicatat sesuai kondisi pemeriksaan pada saat pengujian. Apabila terdapat catatan atau pekerjaan perbaikan, pelaksanaannya mengikuti kesepakatan para pihak.'} ${safe(d.parties)}</p>
+  <p class="closing">Demikian berita acara ini dibuat dalam rangkap yang diperlukan dan mempunyai kekuatan sebagai dokumentasi pelaksanaan pekerjaan setelah ditandatangani oleh para pihak.</p>
+  <section class="signatures"><div class="signature"><div class="role">PIHAK PELAKSANA</div><div class="company-name">${safe(c.name||'')}</div><div class="sign-space"></div><div class="sign-name">${safe(p.pic||'Nama dan tanda tangan')}</div><div class="sign-title">Nama jelas / Jabatan</div></div><div class="signature"><div class="role">PIHAK PEMBERI KERJA / PENERIMA</div><div class="company-name">${safe(p.client||'')}</div><div class="sign-space"></div><div class="sign-name">${safe(d.parties||'Nama dan tanda tangan')}</div><div class="sign-title">Nama jelas / Jabatan</div></div></section>
+  <footer class="doc-footer"><span>${safe(d.number)}</span><span>${isBast?'Berita Acara Serah Terima':'Berita Acara Pengetesan'}</span><span>${safe(dateText)}</span></footer>
+  <p class="screen-hint">Periksa dokumen, lalu pilih Cetak / Simpan sebagai PDF.</p>
+ </main>
+ <script>window.addEventListener('load',()=>{const imgs=[...document.images];Promise.all(imgs.map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r}))).then(()=>setTimeout(()=>window.print(),400))});<\/script>
  </body></html>`);
  w.document.close();
 }
