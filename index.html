@@ -328,49 +328,49 @@ function printQuote(id){
  const html=`<style>
  @page{size:A4 landscape;margin:10mm}
  *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
- body{font-family:Arial,Helvetica,sans-serif;color:#263746;font-size:9px;line-height:1.45}
+ body{font-family:Arial,Helvetica,sans-serif;color:#292722;font-size:9px;line-height:1.45}
  .q-sheet{width:100%;max-width:277mm;margin:0 auto}
  .q-header{margin-bottom:8mm}
- .q-titlebar{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #173e5c;padding:0 0 5mm;margin-bottom:5mm}
- .q-title{font-size:25px;letter-spacing:2.5px;font-weight:800;color:#173e5c}
- .q-kicker{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#5c7b91;font-weight:700;margin-bottom:3px}
- .q-number{text-align:right;font-size:10px;color:#52697a}
- .q-number b{display:block;font-size:13px;color:#173e5c;margin-top:2px}
+ .q-titlebar{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #B79A63;padding:0 0 5mm;margin-bottom:5mm}
+ .q-title{font-size:25px;letter-spacing:2.5px;font-weight:800;color:#B79A63}
+ .q-kicker{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#9B855F;font-weight:700;margin-bottom:3px}
+ .q-number{text-align:right;font-size:10px;color:#75664D}
+ .q-number b{display:block;font-size:13px;color:#B79A63;margin-top:2px}
  .q-intro{display:grid;grid-template-columns:1.1fr 1fr;gap:9mm;margin-bottom:6mm}
- .q-block{border:1px solid #d8e2e9;border-radius:5px;padding:4mm 5mm;background:#fbfdfe}
- .q-label{font-size:7px;letter-spacing:1.4px;text-transform:uppercase;color:#698296;font-weight:700;margin-bottom:5px}
- .q-client{font-size:15px;font-weight:800;color:#173e5c;margin-bottom:3px}
- .q-project{font-size:11px;font-weight:700;color:#263746;margin-bottom:3px}
- .q-address{color:#617586;white-space:pre-line}
+ .q-block{border:1px solid #E2DCCF;border-radius:5px;padding:4mm 5mm;background:#F7F5F0}
+ .q-label{font-size:7px;letter-spacing:1.4px;text-transform:uppercase;color:#8C7957;font-weight:700;margin-bottom:5px}
+ .q-client{font-size:15px;font-weight:800;color:#B79A63;margin-bottom:3px}
+ .q-project{font-size:11px;font-weight:700;color:#292722;margin-bottom:3px}
+ .q-address{color:#756F64;white-space:pre-line}
  .q-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm 6mm}
- .q-meta-item span{display:block;font-size:7px;color:#718697;margin-bottom:1px}
- .q-meta-item b{font-size:9px;color:#263746}
+ .q-meta-item span{display:block;font-size:7px;color:#8A8172;margin-bottom:1px}
+ .q-meta-item b{font-size:9px;color:#292722}
  .q-greeting{font-size:9px;margin:0 0 4mm;color:#526575}
  .q-table{width:100%;border-collapse:collapse;font-size:8px;margin:0 0 5mm}
- .q-table thead th{background:#173e5c;color:#fff;text-align:left;padding:8px 6px;font-size:7px;letter-spacing:.35px;border:1px solid #173e5c}
- .q-table tbody td{padding:7px 6px;border-bottom:1px solid #dce5eb;vertical-align:top}
- .q-table tbody tr:nth-child(even){background:#f5f8fa}
- .q-no{width:7%;text-align:center;color:#718697}
- .q-desc{display:block;color:#718697;font-size:7px;margin-top:2px}
+ .q-table thead th{background:#B79A63;color:#fff;text-align:left;padding:8px 6px;font-size:7px;letter-spacing:.35px;border:1px solid #B79A63}
+ .q-table tbody td{padding:7px 6px;border-bottom:1px solid #E6E1D8;vertical-align:top}
+ .q-table tbody tr:nth-child(even){background:#FAFAFA}
+ .q-no{width:7%;text-align:center;color:#8A8172}
+ .q-desc{display:block;color:#8A8172;font-size:7px;margin-top:2px}
  .q-center{text-align:center;white-space:nowrap}
  .q-num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
  .q-bottom{display:grid;grid-template-columns:1fr 78mm;gap:8mm;align-items:start}
- .q-note{border-left:3px solid #9bb5c7;padding:2mm 0 2mm 4mm;min-height:18mm;color:#526575}
- .q-note b{display:block;color:#173e5c;font-size:8px;margin-bottom:3px;text-transform:uppercase;letter-spacing:.7px}
- .q-totals{border:1px solid #d8e2e9;border-radius:5px;overflow:hidden}
- .q-total-row{display:flex;justify-content:space-between;padding:2.2mm 3mm;border-bottom:1px solid #e4ebf0;font-size:8px}
+ .q-note{border-left:3px solid #B79A63;padding:2mm 0 2mm 4mm;min-height:18mm;color:#526575}
+ .q-note b{display:block;color:#B79A63;font-size:8px;margin-bottom:3px;text-transform:uppercase;letter-spacing:.7px}
+ .q-totals{border:1px solid #E2DCCF;border-radius:5px;overflow:hidden}
+ .q-total-row{display:flex;justify-content:space-between;padding:2.2mm 3mm;border-bottom:1px solid #EAE5DC;font-size:8px}
  .q-total-row strong{font-variant-numeric:tabular-nums}
- .q-total-row.grand{background:#173e5c;color:#fff;padding:3.5mm 3mm;font-size:10px;font-weight:800;border:0}
- .q-terms{margin-top:6mm;border-top:1px solid #d8e2e9;padding-top:4mm}
- .q-terms-title{font-size:8px;font-weight:800;color:#173e5c;text-transform:uppercase;letter-spacing:1px;margin-bottom:3mm}
+ .q-total-row.grand{background:#B79A63;color:#fff;padding:3.5mm 3mm;font-size:10px;font-weight:800;border:0}
+ .q-terms{margin-top:6mm;border-top:1px solid #E2DCCF;padding-top:4mm}
+ .q-terms-title{font-size:8px;font-weight:800;color:#B79A63;text-transform:uppercase;letter-spacing:1px;margin-bottom:3mm}
  .q-terms-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
- .q-term span{display:block;color:#718697;font-size:7px;margin-bottom:2px}
- .q-term b{font-size:8px;color:#263746}
+ .q-term span{display:block;color:#8A8172;font-size:7px;margin-bottom:2px}
+ .q-term b{font-size:8px;color:#292722}
  .q-sign{display:grid;grid-template-columns:1fr 1fr;gap:20mm;margin-top:8mm;text-align:center}
  .q-sign-box{min-height:22mm}
  .q-sign-label{font-size:8px;color:#526575}
- .q-sign-name{margin-top:17mm;border-top:1px solid #9aabb7;padding-top:2mm;font-weight:700;color:#173e5c}
- .q-footer{margin-top:5mm;padding-top:2mm;border-top:1px solid #dce5eb;text-align:center;font-size:7px;color:#8394a0}
+ .q-sign-name{margin-top:17mm;border-top:1px solid #B8AD9B;padding-top:2mm;font-weight:700;color:#B79A63}
+ .q-footer{margin-top:5mm;padding-top:2mm;border-top:1px solid #E6E1D8;text-align:center;font-size:7px;color:#9B927F}
  @media print{.q-block,.q-totals,.q-table tr{break-inside:avoid}}
  </style>
  ${printHeader()}
