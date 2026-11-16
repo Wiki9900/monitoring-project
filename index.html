@@ -304,119 +304,122 @@ function printQuote(id){
  const p=project(q.projectId)||{},t=quoteTotals(q),c=db.company||{};
  const rows=(q.items||[]).map((i,n)=>{
   const qty=Number(i.qty||0),material=Number(i.material||0),labor=Number(i.labor||0);
+  const unitPrice=material+labor,total=qty*unitPrice;
   return `<tr>
-   <td class="q-no">${String(n+1).padStart(2,'0')}</td>
-   <td><strong>${esc(i.name)}</strong>${i.desc?`<small class="q-desc">${esc(i.desc)}</small>`:''}</td>
-   <td class="q-center">${esc(i.unit||'unit')}</td>
-   <td class="q-num">${num(qty)}</td>
-   <td class="q-num">${money(material)}</td>
-   <td class="q-num">${money(labor)}</td>
-   <td class="q-num">${money(qty*material)}</td>
-   <td class="q-num">${money(qty*labor)}</td>
+   <td class="q-no">${n+1}</td>
+   <td class="q-item"><strong>${esc(i.name)}</strong>${i.desc?`<small class="q-desc">${esc(i.desc)}</small>`:''}</td>
+   <td class="q-volume"><b>${num(qty)} ${esc(i.unit||'unit')}</b><small>Qty: ${num(qty)}</small></td>
+   <td class="q-num"><b>${money(unitPrice)}</b><small>per ${esc(i.unit||'unit')}</small></td>
+   <td class="q-num q-subtotal"><b>${money(total)}</b></td>
   </tr>`;
  }).join('');
  const discountRate=Math.max(0,Number(q.discount||0));
  const meta=[
-  ['Nomor Penawaran',q.number||'-'],['Tanggal',formatDateID(q.date)||q.date||'-'],
-  ['Versi',q.version||'Awal'],['Status',q.status||'Draft']
+  ['Nomor',q.number||'-'],['Tanggal',formatDateID(q.date)||q.date||'-'],
+  ['Berlaku s/d',q.validUntil||q.validity||'-']
  ];
- const info=(label,value)=>`<div class="q-meta-item"><span>${label}</span><b>${esc(value||'-')}</b></div>`;
- const terms=[
-  ['Waktu Pelaksanaan',q.delivery||'-'],['Syarat Pembayaran',q.payment||'-'],
-  ['Masa Berlaku',q.validity||'-'],['Referensi PO / Kontrak',p.poNumber||q.poNumber||'-']
- ];
+ const info=(label,value)=>`<div class="q-meta-item"><span>${label}:</span><b>${esc(value||'-')}</b></div>`;
  const html=`<style>
- @page{size:A4 landscape;margin:10mm}
+ @page{size:A4 portrait;margin:10mm}
  *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  body{font-family:Arial,Helvetica,sans-serif;color:#292722;font-size:9px;line-height:1.45}
- .q-sheet{width:100%;max-width:277mm;margin:0 auto}
- .q-header{margin-bottom:8mm}
- .q-titlebar{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #B79A63;padding:0 0 5mm;margin-bottom:5mm}
- .q-title{font-size:25px;letter-spacing:2.5px;font-weight:800;color:#B79A63}
- .q-kicker{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#9B855F;font-weight:700;margin-bottom:3px}
- .q-number{text-align:right;font-size:10px;color:#75664D}
- .q-number b{display:block;font-size:13px;color:#B79A63;margin-top:2px}
- .q-intro{display:grid;grid-template-columns:1.1fr 1fr;gap:9mm;margin-bottom:6mm}
- .q-block{border:1px solid #E2DCCF;border-radius:5px;padding:4mm 5mm;background:#F7F5F0}
- .q-label{font-size:7px;letter-spacing:1.4px;text-transform:uppercase;color:#8C7957;font-weight:700;margin-bottom:5px}
- .q-client{font-size:15px;font-weight:800;color:#B79A63;margin-bottom:3px}
- .q-project{font-size:11px;font-weight:700;color:#292722;margin-bottom:3px}
- .q-address{color:#756F64;white-space:pre-line}
- .q-meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:3mm 6mm}
- .q-meta-item span{display:block;font-size:7px;color:#8A8172;margin-bottom:1px}
- .q-meta-item b{font-size:9px;color:#292722}
- .q-greeting{font-size:9px;margin:0 0 4mm;color:#526575}
- .q-table{width:100%;border-collapse:collapse;font-size:8px;margin:0 0 5mm}
- .q-table thead th{background:#B79A63;color:#fff;text-align:left;padding:8px 6px;font-size:7px;letter-spacing:.35px;border:1px solid #B79A63}
- .q-table tbody td{padding:7px 6px;border-bottom:1px solid #E6E1D8;vertical-align:top}
- .q-table tbody tr:nth-child(even){background:#FAFAFA}
- .q-no{width:7%;text-align:center;color:#8A8172}
- .q-desc{display:block;color:#8A8172;font-size:7px;margin-top:2px}
- .q-center{text-align:center;white-space:nowrap}
+ .q-sheet{width:100%;max-width:190mm;margin:0 auto}
+ .company-print-header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E2DCCF;padding-bottom:5mm;margin-bottom:7mm}
+ .company-print-top{display:flex;align-items:center;gap:8px}
+ .company-print-top img{max-width:25mm;max-height:19mm;object-fit:contain}
+ .company-lines{font-size:8px;color:#756F64}
+ .company-short{display:block;color:#292722;font-size:11px}
+ .company-print-address{font-size:7px;color:#8A8172;text-align:right;max-width:70mm}
+ .q-titlebar{display:flex;justify-content:space-between;align-items:flex-start;margin:0 0 7mm}
+ .q-title{font-size:19px;letter-spacing:.2px;font-weight:800;color:#B79A63}
+ .q-number{text-align:right;font-size:8px;color:#75664D;line-height:1.55}
+ .q-number b{display:block;font-size:10px;color:#75664D}
+ .q-intro{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-bottom:7mm}
+ .q-block{padding:3mm 4mm;background:#F7F5F0;min-height:23mm}
+ .q-label{font-size:8px;font-weight:800;color:#292722;margin-bottom:2mm;text-transform:uppercase}
+ .q-client{font-size:10px;font-weight:700;color:#292722;margin-bottom:1mm}
+ .q-project{font-size:9px;font-weight:700;color:#292722;margin-bottom:1mm}
+ .q-address{font-size:8px;color:#756F64;white-space:pre-line}
+ .q-meta-grid{display:grid;grid-template-columns:1fr;gap:1mm}
+ .q-meta-item{font-size:8px;color:#756F64}
+ .q-meta-item b{color:#292722;margin-left:3px}
+ .q-greeting{font-size:8px;margin:0 0 5mm;color:#756F64}
+ .q-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8px;margin:0 0 7mm}
+ .q-table thead th{background:#B79A63;color:#fff;text-align:left;padding:2.5mm 2mm;font-size:8px;font-weight:700}
+ .q-table thead th:nth-child(1){width:8%;text-align:center}
+ .q-table thead th:nth-child(2){width:43%}
+ .q-table thead th:nth-child(3){width:14%}
+ .q-table thead th:nth-child(4){width:17%;text-align:right}
+ .q-table thead th:nth-child(5){width:18%;text-align:right}
+ .q-table tbody td{padding:2.5mm 2mm;border-bottom:1px solid #E6E1D8;vertical-align:top}
+ .q-no{text-align:center;color:#756F64}
+ .q-item strong{display:block;color:#292722;font-size:8px}
+ .q-desc{display:block;color:#756F64;font-size:7px;margin-top:1mm;white-space:pre-line}
+ .q-volume{white-space:nowrap;color:#292722}
+ .q-volume small,.q-num small{display:block;color:#8A8172;font-size:6.5px;margin-top:1px}
  .q-num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
- .q-bottom{display:grid;grid-template-columns:1fr 78mm;gap:8mm;align-items:start}
- .q-note{border-left:3px solid #B79A63;padding:2mm 0 2mm 4mm;min-height:18mm;color:#526575}
- .q-note b{display:block;color:#B79A63;font-size:8px;margin-bottom:3px;text-transform:uppercase;letter-spacing:.7px}
- .q-totals{border:1px solid #E2DCCF;border-radius:5px;overflow:hidden}
- .q-total-row{display:flex;justify-content:space-between;padding:2.2mm 3mm;border-bottom:1px solid #EAE5DC;font-size:8px}
- .q-total-row strong{font-variant-numeric:tabular-nums}
- .q-total-row.grand{background:#B79A63;color:#fff;padding:3.5mm 3mm;font-size:10px;font-weight:800;border:0}
- .q-terms{margin-top:6mm;border-top:1px solid #E2DCCF;padding-top:4mm}
- .q-terms-title{font-size:8px;font-weight:800;color:#B79A63;text-transform:uppercase;letter-spacing:1px;margin-bottom:3mm}
- .q-terms-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm}
- .q-term span{display:block;color:#8A8172;font-size:7px;margin-bottom:2px}
- .q-term b{font-size:8px;color:#292722}
- .q-sign{display:grid;grid-template-columns:1fr 1fr;gap:20mm;margin-top:8mm;text-align:center}
- .q-sign-box{min-height:22mm}
- .q-sign-label{font-size:8px;color:#526575}
- .q-sign-name{margin-top:17mm;border-top:1px solid #B8AD9B;padding-top:2mm;font-weight:700;color:#B79A63}
- .q-footer{margin-top:5mm;padding-top:2mm;border-top:1px solid #E6E1D8;text-align:center;font-size:7px;color:#9B927F}
+ .q-num b{font-weight:600;color:#292722}
+ .q-subtotal b{font-weight:800}
+ .q-bottom{display:flex;justify-content:flex-end;margin:0 0 7mm}
+ .q-totals{width:78mm;border:1px solid #B79A63;padding:4mm}
+ .q-total-row{display:flex;justify-content:space-between;padding:1mm 0;font-size:8px;color:#756F64}
+ .q-total-row strong{font-variant-numeric:tabular-nums;color:#292722}
+ .q-total-row.grand{padding-top:2mm;margin-top:1mm;border-top:1px solid #E2DCCF;color:#292722;font-size:11px;font-weight:800}
+ .q-total-row.grand strong{font-size:14px;color:#B79A63}
+ .q-terms{margin-top:3mm}
+ .q-terms-title{font-size:9px;font-weight:800;color:#292722;margin-bottom:2mm;text-transform:uppercase}
+ .q-terms-list{font-size:7px;line-height:1.55;color:#756F64;padding-left:4mm}
+ .q-closing{margin-top:3mm;color:#B79A63;font-size:8px;font-weight:700}
+ .q-footer{margin-top:6mm;padding-top:2mm;border-top:1px solid #E6E1D8;text-align:center;font-size:7px;color:#9B927F}
  @media print{.q-block,.q-totals,.q-table tr{break-inside:avoid}}
  </style>
  ${printHeader()}
  <main class="q-sheet">
   <div class="q-titlebar">
-   <div><div class="q-kicker">Commercial Proposal</div><div class="q-title">PENAWARAN HARGA</div></div>
-   <div class="q-number">Nomor Dokumen<b>${esc(q.number||'-')}</b></div>
+   <div class="q-title">ESTIMASI PENAWARAN</div>
+   <div class="q-number">Nomor: <b>${esc(q.number||'-')}</b>Tanggal: ${esc(formatDateID(q.date)||q.date||'-')}<br>Berlaku s/d: ${esc(q.validUntil||q.validity||'-')}</div>
   </div>
   <div class="q-intro">
    <section class="q-block">
-    <div class="q-label">Disampaikan kepada</div>
-    <div class="q-client">${esc(p.client||'Customer')}</div>
-    <div class="q-project">${esc(p.name||'')}</div>
-    <div class="q-address">${esc(q.address||p.clientAddress||'')}</div>
+    <div class="q-label">INFO KLIEN</div>
+    <div class="q-meta-grid">
+     ${info('Nama',p.client||'Customer')}
+     ${info('WhatsApp',p.clientPhone||p.phone||'-')}
+    </div>
    </section>
    <section class="q-block">
-    <div class="q-label">Informasi penawaran</div>
-    <div class="q-meta-grid">${meta.map(x=>info(x[0],x[1])).join('')}</div>
+    <div class="q-label">INFO PROYEK</div>
+    <div class="q-meta-grid">
+     ${info('Proyek',p.name||'-')}
+     ${info('Alamat',q.address||p.address||p.clientAddress||'-')}
+    </div>
    </section>
   </div>
-  <p class="q-greeting">Dengan hormat,<br>Terima kasih atas kesempatan yang diberikan. Bersama ini kami sampaikan penawaran harga untuk pekerjaan tersebut dengan rincian sebagai berikut.</p>
   <table class="q-table">
-   <thead><tr><th>No.</th><th>Uraian Pekerjaan / Spesifikasi</th><th>Satuan</th><th>Qty</th><th>Harga Material / Unit</th><th>Harga Upah / Unit</th><th>Total Material</th><th>Total Upah</th></tr></thead>
+   <thead><tr><th>No</th><th>Item &amp; Spesifikasi</th><th>Volume</th><th>Harga Satuan</th><th>Subtotal</th></tr></thead>
    <tbody>${rows}</tbody>
   </table>
   <div class="q-bottom">
-   <div class="q-note"><b>Catatan Penawaran</b>${esc(q.note||'Harga dan lingkup pekerjaan mengacu pada rincian penawaran ini.')}</div>
    <div class="q-totals">
-    <div class="q-total-row"><span>Total Material</span><strong>${money(t.material)}</strong></div>
-    <div class="q-total-row"><span>Total Upah</span><strong>${money(t.labor)}</strong></div>
-    <div class="q-total-row"><span>Subtotal</span><strong>${money(t.subtotal)}</strong></div>
-    <div class="q-total-row"><span>Diskon (${num(discountRate)}%)</span><strong>− ${money(t.discountValue)}</strong></div>
-    <div class="q-total-row grand"><span>GRAND TOTAL</span><strong>${money(t.total)}</strong></div>
+    <div class="q-total-row grand"><span>TOTAL ESTIMASI</span><strong>${money(t.total)}</strong></div>
    </div>
   </div>
+  ${q.note?`<div class="q-terms"><div class="q-terms-title">Catatan Penawaran</div><div class="q-terms-list">${esc(q.note)}</div></div>`:''}
   <section class="q-terms">
-   <div class="q-terms-title">Syarat & Ketentuan</div>
-   <div class="q-terms-grid">${terms.map(x=>`<div class="q-term"><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join('')}</div>
+   <div class="q-terms-title">KETENTUAN PENAWARAN AWAL</div>
+   <ol class="q-terms-list">
+    <li>Dokumen ini dibuat mandiri melalui kalkulator estimasi dan merupakan estimasi awal, bukan quotation final atau kontrak kerja.</li>
+    <li>Harga mengikuti ukuran dan spesifikasi yang dimasukkan customer. Harga final ditetapkan setelah survey, pengukuran ulang, desain, dan verifikasi material.</li>
+    <li>Harga hanya mencakup komponen yang tertulis. Pekerjaan sipil, ME, appliance, top table, kaca, lighting, hardware khusus, transportasi, dan pekerjaan lain tidak termasuk kecuali tercantum.</li>
+    <li>Item tambahan penawaran manual tidak dapat dijadikan harga final sebelum ditinjau ASA Living.</li>
+    <li>Dokumen ini tidak memerlukan tanda tangan dan tidak dapat digunakan sebagai invoice atau bukti pembayaran.</li>
+    <li>Dapatkan harga terbaik untuk proyek Anda. Hubungi tim sales untuk konsultasi dan informasi promo atau penawaran khusus.</li>
+   </ol>
+   <div class="q-closing">Untuk quotation resmi, konsultasikan dokumen ini dengan tim ${esc(c.shortName||c.name||'ASA Living')}.</div>
   </section>
-  <div class="q-sign">
-   <div class="q-sign-box"><div class="q-sign-label">Hormat kami,</div><div class="q-sign-name">${esc(q.createdBy||'Authorized Representative')}</div></div>
-   <div class="q-sign-box"><div class="q-sign-label">Persetujuan pelanggan,</div><div class="q-sign-name">${esc(p.client||'Customer')}</div></div>
-  </div>
-  <div class="q-footer">Dokumen penawaran ini diterbitkan secara elektronik oleh ${esc(c.shortName||c.name||'perusahaan')}.</div>
+  <div class="q-footer">Dokumen estimasi penawaran diterbitkan secara elektronik oleh ${esc(c.shortName||c.name||'perusahaan')}.</div>
  </main>`;
- printWindow('Penawaran '+q.number,html,'landscape');
+ printWindow('Penawaran '+q.number,html,'portrait');
 }
 function renderProgress(){setOptions('progressProject');let p=project($('progressProject')?.value||selectedProject);if(!p){$('progressTable').innerHTML='<tr><td colspan="9" class="empty">Pilih proyek terlebih dahulu.</td></tr>';return}selectedProject=p.id;$('progressTable').innerHTML=p.items.map(i=>{let w=itemWeight(p,i),actual=itemActual(i),real=w*actual/100,target=w*Number(i.target||0)/100,dev=real-target;return `<tr><td><b>${esc(i.name)}</b></td><td>${num(i.qty)} ${esc(i.unit||'unit')}</td><td><b>${num(i.actualQty)}</b> ${esc(i.unit||'unit')}</td><td>${money(itemValue(i))}</td><td>${num(w)}%</td><td><b>${num(actual)}%</b></td><td>${num(real)}%</td><td><b class="${dev>=0?'positive':'status late'}">${dev>0?'+':''}${num(dev)}%</b></td><td><button class="btn light small" onclick="editItem('${p.id}','${i.id}')">Edit</button> <button class="btn danger small" onclick="deleteItem('${p.id}','${i.id}')">×</button></td></tr>`}).join('')+(()=>{let rt=p.items.reduce((s,i)=>s+itemWeight(p,i)*itemActual(i)/100,0),tt=p.items.reduce((s,i)=>s+itemWeight(p,i)*Number(i.target||0)/100,0),d=rt-tt;return `<tr><td><b>TOTAL / PROGRES PROYEK</b></td><td>—</td><td>—</td><td><b>${money(p.items.reduce((s,i)=>s+itemValue(i),0))}</b></td><td><b>${num(p.items.reduce((s,i)=>s+itemWeight(p,i),0))}%</b></td><td>—</td><td><b>${num(rt)}%</b></td><td><b class="${d>=0?'positive':'status late'}">${d>0?'+':''}${num(d)}%</b></td><td></td></tr>`})()}
 function renderInvoices(){setOptions('invoiceProject',true);let filter=$('invoiceProject')?.value||'all';let list=(db.invoices||[]).filter(v=>filter==='all'||v.projectId===filter);let paid=list.reduce((s,v)=>s+Number(v.paid||0),0),due=list.reduce((s,v)=>s+invoiceCalc(v).due,0),gross=list.reduce((s,v)=>s+invoiceCalc(v).total,0);$('invoiceMetrics').innerHTML=[['Total Tagihan',money(gross),'Setelah retensi dan potongan'],['Sudah Dibayar',money(paid),'Pembayaran tercatat'],['Belum Dibayar',money(due),'Sisa pembayaran']].map((a,i)=>`<div class="metric" style="--tint:${['#E1F3EC','#DDF5E7','#FFF1D9'][i]}"><div class="metric-top">${a[0]}</div><div class="metric-value">${a[1]}</div><div class="metric-note">${a[2]}</div></div>`).join('');$('invoiceTable').innerHTML=list.map(v=>{let c=invoiceCalc(v),status=c.due<=0?'Lunas':v.paid>0?'Sebagian':'Belum dibayar';return `<tr><td><b>${esc(v.number)}</b><div class="muted">${esc(v.note)}</div></td><td>${esc(projectName(v.projectId))}</td><td>${esc(v.date)}</td><td>${money(v.dpp)}</td><td>${money(c.tax)}</td><td>${money(c.ret)}</td><td><b>${money(c.total)}</b></td><td>${money(v.paid)}</td><td><span class="status ${status==='Lunas'?'on':status==='Sebagian'?'wait':'late'}">${status}</span></td><td><div class="table-actions"><button class="btn light small" onclick="printInvoiceReport('${v.id}')">Cetak</button><button class="btn light small" onclick="payInvoice('${v.id}')">Bayar</button><button class="btn light small" onclick="editInvoice('${v.id}')">Edit</button><button class="btn danger small" onclick="deleteInvoice('${v.id}')">×</button></div></td></tr>`}).join('')||'<tr><td colspan="10" class="empty">Belum ada invoice.</td></tr>'}
