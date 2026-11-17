@@ -632,7 +632,7 @@ function printQuote(id){
  <main class="q-sheet">
   <div class="q-project-head">
    <div class="q-project-company"><div class="q-project-brand">${c.logo?`<img src="${c.logo}" alt="Logo perusahaan">`:''}<div>${c.shortName?`<div class="q-project-short">${esc(c.shortName)}</div>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}</div></div><div class="q-project-address">${esc(c.address||'')}</div></div>
-   <div class="q-project-meta"><h2>SURAT PENAWARAN HARGA</h2><div class="q-project-meta-grid">${meta.map(x=>`<span>${esc(x[0])}</span><b>: ${esc(x[1])}</b>`).join('')}</div></div>
+   <div class="q-project-meta"><h2>QUOTATION</h2><div class="q-project-meta-grid">${meta.map(x=>`<span>${esc(x[0])}</span><b>: ${esc(x[1])}</b>`).join('')}</div></div>
   </div>
   <div class="q-intro">
    <section class="q-block">
