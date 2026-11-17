@@ -309,7 +309,7 @@ function printQuote(id){
   const html=`<style>@page{size:A4 portrait;margin:12mm}*{box-sizing:border-box;print-color-adjust:exact;-webkit-print-color-adjust:exact}body{font:10px Arial,sans-serif;color:#111}.m-sheet{width:100%}.m-head{display:flex;justify-content:space-between;gap:12mm;align-items:flex-start;margin-bottom:7mm}.m-company{flex:1}.m-quote{width:96mm}.m-quote h2{font-size:17px;margin:0 0 3px}.m-meta{background:#ddd;padding:2mm 3mm;display:grid;grid-template-columns:25mm 1fr;gap:1mm 2mm;font-size:9px}.m-meta b{font-weight:600}.m-table{border-collapse:collapse;width:100%;table-layout:fixed;font-size:9px}.m-table th{background:#d7d7d7;padding:2.5mm 1.5mm;border:1px solid #bbb;text-align:center}.m-table td{padding:2mm 1.5mm;border:1px solid #ccc;vertical-align:top}.m-table th:nth-child(1){width:5%}.m-table th:nth-child(2){width:43%;text-align:left}.m-table th:nth-child(3){width:9%}.m-table th:nth-child(4){width:8%}.m-table th:nth-child(5){width:9%}.m-table th:nth-child(6){width:13%}.m-table th:nth-child(7){width:13%}.m-section td{background:#eee;font-weight:bold}.m-center{text-align:center}.m-num{text-align:right;white-space:nowrap}.m-table small{display:block;margin-top:2px}.m-total td{background:#d7d7d7;font-weight:bold}.m-note{margin:3mm 0 0 10mm;border:1px solid #bbb;min-height:22mm;padding:2mm;width:72%}.m-created{margin:4mm 0 0 10mm}.m-created b{display:block;margin-bottom:12mm}.m-foot{text-align:center;font-style:italic;font-weight:bold;margin-top:3mm;font-size:9px}</style>
   <main class="m-sheet"><div class="m-head"><div class="m-company"><div style="display:flex;align-items:flex-start;gap:8px">${c.logo?`<img src="${c.logo}" style="width:43px;height:43px;object-fit:contain" alt="Logo">`:''}<div>${c.shortName?`<div style="font-size:22px;font-weight:800;line-height:1.1">${esc(c.shortName)}</div>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}</div></div><div style="font-size:8px;white-space:pre-line;margin-top:3px">${esc(c.address||'')}</div></div><div class="m-quote"><h2>Quotation</h2><div class="m-meta">${meta.map(x=>`<span>${esc(x[0])}</span><b>: ${esc(x[1])}</b>`).join('')}</div></div></div>
   <table class="m-table"><thead><tr><th>No</th><th>Description</th><th>LT</th><th>Qty</th><th>Uom</th><th>Unit price</th><th>Amount</th></tr></thead><tbody><tr class="m-section"><td colspan="7">A. Material</td></tr>${makeRows('material')}<tr class="m-section"><td colspan="7">B. Labour Cost</td></tr>${makeRows('labor')}<tr class="m-total"><td colspan="6" style="text-align:right">Grand Total</td><td class="m-num">${money(t.total)}</td></tr></tbody></table>
-  <div class="m-note">Note:<br>${esc(q.note||'')}</div><div class="m-created">Created By,<br><br><b>${esc(q.createdBy||c.shortName||c.name||'')}</b></div><div class="m-foot">Note : This document is fax/email directly by computer, sign is not need necessary</div></main>`;
+  <div class="m-note">Note:<br>${esc(q.note||'')}</div><div class="m-created">Created By,<br><br><b>${esc('Wiki')}</b></div><div class="m-foot">Note : This document is fax/email directly by computer, sign is not need necessary</div></main>`;
   printWindow('Quotation '+q.number,html,'portrait');return;
  }
  const rows=(q.items||[]).map((i,n)=>{
@@ -343,6 +343,15 @@ function printQuote(id){
  *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
  body{font-family:Arial,Helvetica,sans-serif;color:#292722;font-size:9px;line-height:1.45}
  .q-sheet{width:100%;max-width:277mm;margin:0 auto}
+ .q-project-head{display:flex;justify-content:space-between;gap:12mm;align-items:flex-start;margin-bottom:7mm;border-bottom:1px solid #999;padding-bottom:4mm}
+ .q-project-company{flex:1;min-width:0}.q-project-brand{display:flex;align-items:flex-start;gap:8px}
+ .q-project-brand img{width:43px;height:43px;object-fit:contain;flex:0 0 43px}
+ .q-project-short{font-size:22px;font-weight:800;line-height:1.1}
+ .q-project-brand b{display:block;font-size:12px;line-height:1.12}
+ .q-project-address{font-size:8px;white-space:pre-line;margin-top:3px}
+ .q-project-meta{width:96mm}.q-project-meta h2{font-size:17px;margin:0 0 3px}
+ .q-project-meta-grid{background:#ddd;padding:2mm 3mm;display:grid;grid-template-columns:29mm 1fr;gap:1mm 2mm;font-size:8px}
+ .q-project-meta-grid b{font-weight:600}
  .company-print-header{border-bottom:1px solid #E2DCCF;padding-bottom:4mm;margin-bottom:6mm}
  .q-titlebar{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #B79A63;padding:0 0 4mm;margin-bottom:5mm}
  .q-kicker{font-size:7px;letter-spacing:1.8px;text-transform:uppercase;color:#8A7959;font-weight:700;margin-bottom:2px}
@@ -393,11 +402,10 @@ function printQuote(id){
  .q-footer{margin-top:4mm;padding-top:2mm;border-top:1px solid #E6E1D8;text-align:center;font-size:7px;color:#9B927F}
  @media print{.q-block,.q-totals,.q-table tr{break-inside:avoid}}
  </style>
- ${printHeader()}
  <main class="q-sheet">
-  <div class="q-titlebar">
-   <div><div class="q-kicker">Dokumen Komersial</div><div class="q-title">SURAT PENAWARAN HARGA</div></div>
-   <div class="q-number">Nomor Dokumen<b>${esc(q.number||'-')}</b></div>
+  <div class="q-project-head">
+   <div class="q-project-company"><div class="q-project-brand">${c.logo?`<img src="${c.logo}" alt="Logo perusahaan">`:''}<div>${c.shortName?`<div class="q-project-short">${esc(c.shortName)}</div>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}</div></div><div class="q-project-address">${esc(c.address||'')}</div></div>
+   <div class="q-project-meta"><h2>SURAT PENAWARAN HARGA</h2><div class="q-project-meta-grid">${meta.map(x=>`<span>${esc(x[0])}</span><b>: ${esc(x[1])}</b>`).join('')}</div></div>
   </div>
   <div class="q-intro">
    <section class="q-block">
@@ -431,7 +439,7 @@ function printQuote(id){
    <div class="q-terms-grid">${terms.map(x=>`<div class="q-term"><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join('')}</div>
   </section>
   <div class="q-sign">
-   <div class="q-sign-box"><div class="q-sign-label">Diajukan oleh,</div><div class="q-sign-name">${esc(q.createdBy||c.shortName||c.name||'Perwakilan Kontraktor')}</div></div>
+   <div class="q-sign-box"><div class="q-sign-label">Diajukan oleh,</div><div class="q-sign-name">${esc('Wiki')}</div></div>
    <div class="q-sign-box"><div class="q-sign-label">Disetujui oleh,</div><div class="q-sign-name">${esc(p.client||'Pemberi Pekerjaan')}</div></div>
   </div>
   <div class="q-footer">Dokumen penawaran harga · ${esc(c.shortName||c.name||'Perusahaan')}</div>
@@ -580,6 +588,18 @@ header.company-print-header .company-print-address{display:block!important;width
  .gallery-pages>.gallery-page:first-child{break-before:auto!important;page-break-before:auto!important}
 }
 
+@media print{
+ *{color:#333!important;print-color-adjust:exact!important;-webkit-print-color-adjust:exact!important}
+ th,thead th,.heading,.stat,.q-block,.q-table thead th,.q-total-row.grand,.m-meta,.m-table th,.m-section td,.m-total td,
+ .invoice-total,.inv-pay-now td,.inv-totalbar,.receipt-title,.receipt-amount,.bank-note,.signatures,
+ .meta div,.trend-panel,.weekly-print-chart{background-color:#e6e6e6!important}
+ tbody tr:nth-child(even) td,.q-table tbody tr:nth-child(even) td{background-color:#f3f3f3!important}
+ .bar-track,.bar-track i,.trend-col.actual .bar-track i,.weekly-print-bar,.weekly-print-legend i,
+ .weekly-print-bar.target,.weekly-print-bar.actual,.weekly-print-legend .target-key,.weekly-print-legend .actual-key{background:#999!important}
+ .heading,.q-titlebar,.q-titlebar *,.q-title,.q-kicker,.q-label,.q-table thead th,.q-total-row.grand strong,
+ .receipt-title,.receipt-amount,.inv-red,.stat b{color:#333!important;border-color:#999!important}
+ svg *{stroke:#777!important;fill:#888!important}
+}
 </style></head><body>${repeatHead}${html}<script>
  (function(){const start=()=>{const imgs=[...document.images];Promise.all(imgs.map(i=>i.complete?Promise.resolve():new Promise(r=>{i.onload=r;i.onerror=r}))).then(()=>setTimeout(()=>{window.focus();window.print()},350))};if(document.readyState==='complete')start();else window.addEventListener('load',start);})();
  <\/script></body></html>`);w.document.close();
