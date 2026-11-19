@@ -521,18 +521,16 @@ function printQuote(id){
  }).join('');
  const discountRate=Math.max(0,Number(q.discount||0));
  const meta=[
-  ['Nomor Penawaran',q.number||'-'],
-  ['Tanggal',formatDateID(q.date)||q.date||'-'],
-  ['Versi',q.version||'Awal'],
-  ['Status',q.status||'Draft']
+  ['Quotation No.',q.number||'-'],
+  ['Date',formatDateID(q.date)||q.date||'-'],
+  ['Version',q.version||'Initial'],
+  ['Status',q.status||'Draft'],
+  ['Delivery Time',q.delivery||'2–3 Weeks after PO'],
+  ['Payment Terms',q.payment||'60 Days after Invoice date'],
+  ['Validity',q.validity||q.validUntil||'30 Days'],
+  ['PO / Contract Reference',p.poNumber||q.poNumber||'4800293031']
  ];
  const info=(label,value)=>`<div class="q-meta-item"><span>${label}</span><b>${esc(value||'-')}</b></div>`;
- const terms=[
-  ['Waktu Pelaksanaan',q.delivery||'-'],
-  ['Syarat Pembayaran',q.payment||'-'],
-  ['Masa Berlaku',q.validity||q.validUntil||'-'],
-  ['Referensi PO / Kontrak',p.poNumber||q.poNumber||'-']
- ];
  const html=`<style>
  @page{size:A4 landscape;margin:10mm}
  *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
@@ -635,44 +633,40 @@ function printQuote(id){
  <main class="q-sheet">
   <div class="q-project-head">
    <div class="q-project-company"><div class="q-project-brand">${c.logo?`<img src="${c.logo}" alt="Logo perusahaan">`:''}<div>${c.shortName?`<div class="q-project-short">${esc(c.shortName)}</div>`:''}${companyNameLines(c.name,'IDENTITAS PERUSAHAAN BELUM DIISI')}</div></div><div class="q-project-address">${esc(c.address||'')}</div></div>
-   <div class="q-project-meta"><h2>SURAT PENAWARAN HARGA</h2><div class="q-project-meta-grid">${meta.map(x=>`<span>${esc(x[0])}</span><b>: ${esc(x[1])}</b>`).join('')}</div></div>
+   <div class="q-project-meta"><h2>QUOTATION</h2><div class="q-project-meta-grid">${meta.map(x=>`<span>${esc(x[0])}</span><b>: ${esc(x[1])}</b>`).join('')}</div></div>
   </div>
   <div class="q-intro">
    <section class="q-block">
-    <div class="q-label">Kepada / Pemilik Pekerjaan</div>
-    <div class="q-client">${esc(p.client||'Pelanggan')}</div>
-    <div class="q-project">${esc(p.name||'')}</div>
+    <div class="q-label">To / Customer</div>
+    <div class="q-client">${esc(p.client||'Customer')}</div>
+    <div class="q-project">Project : ${esc(p.name||q.projectName||'')}</div>
     <div class="q-address">${esc(q.address||p.clientAddress||p.address||'')}</div>
    </section>
    <section class="q-block">
-    <div class="q-label">Identitas Penawaran</div>
+    <div class="q-label">Quotation Details</div>
     <div class="q-meta-grid">${meta.map(x=>info(x[0],x[1])).join('')}</div>
    </section>
   </div>
-  <p class="q-greeting">Dengan hormat, bersama ini kami mengajukan penawaran harga untuk pekerjaan sebagaimana diuraikan di bawah ini. Rincian volume dan biaya disajikan sebagai dasar evaluasi dan persetujuan pekerjaan.</p>
+  <p class="q-greeting">Dear Sir/Madam, We are pleased to submit our quotation for the project described below. The following scope of work, quantities, and pricing are presented for your review and approval.</p>
   <table class="q-table">
-   <thead><tr><th>No.</th><th>Uraian Pekerjaan / Spesifikasi</th><th>Volume</th><th>Harga Material / Unit</th><th>Harga Upah / Unit</th><th>Total Material</th><th>Total Upah</th></tr></thead>
+   <thead><tr><th>No.</th><th>Description / Specifications</th><th>Qty</th><th>Material Price / Unit</th><th>Labor Price / Unit</th><th>Material Amount</th><th>Labor Amount</th></tr></thead>
    <tbody>${rows}</tbody>
   </table>
   <div class="q-bottom">
-   <div class="q-note"><b>Keterangan / Catatan</b>${esc(q.note||'Pelaksanaan pekerjaan mengikuti lingkup, spesifikasi, dan volume yang tercantum dalam dokumen penawaran ini.')}</div>
+   <div class="q-note"><b>Notes</b>${esc(q.note||'The work shall be carried out in accordance with the scope, specifications, and quantities stated in this quotation.')}</div>
    <div class="q-totals">
     <div class="q-total-row"><span>Total Material</span><strong>${money(t.material)}</strong></div>
-    <div class="q-total-row"><span>Total Upah</span><strong>${money(t.labor)}</strong></div>
+    <div class="q-total-row"><span>Total Labor</span><strong>${money(t.labor)}</strong></div>
     <div class="q-total-row"><span>Subtotal</span><strong>${money(t.subtotal)}</strong></div>
-    <div class="q-total-row"><span>Diskon (${num(discountRate)}%)</span><strong>− ${money(t.discountValue)}</strong></div>
-    <div class="q-total-row grand"><span>JUMLAH PENAWARAN</span><strong>${money(t.total)}</strong></div>
+    <div class="q-total-row"><span>Discount (${num(discountRate)}%)</span><strong>− ${money(t.discountValue)}</strong></div>
+    <div class="q-total-row grand"><span>GRAND TOTAL</span><strong>${money(t.total)}</strong></div>
    </div>
   </div>
-  <section class="q-terms">
-   <div class="q-terms-title">Syarat Komersial dan Pelaksanaan</div>
-   <div class="q-terms-grid">${terms.map(x=>`<div class="q-term"><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join('')}</div>
-  </section>
   <div class="q-sign">
-   <div class="q-sign-box"><div class="q-sign-label">Diajukan oleh,</div><div class="q-sign-name">${esc('Wiki')}</div></div>
-   <div class="q-sign-box"><div class="q-sign-label">Disetujui oleh,</div><div class="q-sign-name">${esc(p.client||'Pemberi Pekerjaan')}</div></div>
+   <div class="q-sign-box"><div class="q-sign-label">Prepared by,</div><div class="q-sign-name">${esc('Wiki')}</div></div>
+   <div class="q-sign-box"><div class="q-sign-label">Approved by,</div><div class="q-sign-name">&nbsp;</div></div>
   </div>
-  <div class="q-footer">Dokumen penawaran harga · ${esc(c.shortName||c.name||'Perusahaan')}</div>
+  <div class="q-footer">Quotation · ${esc(c.shortName||c.name||'Company')}</div>
  </main>`;
  printWindow('Penawaran '+q.number,html,'landscape');
 }
