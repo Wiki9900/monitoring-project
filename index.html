@@ -143,6 +143,83 @@ main{min-width:0;padding:27px clamp(16px,3vw,38px) 44px}
 .customer-filter{min-width:190px;max-width:260px}
 .toolbar select.search{flex:0 1 260px}
 @media(max-width:700px){.customer-filter,.toolbar select.search{min-width:100%;max-width:100%;flex:1 1 100%}}
+
+/* ATI DARK PREMIUM THEME — screen only; existing print templates remain grayscale. */
+@media screen {
+:root{
+ --site-primary:#1769d2;--site-on-primary:#f7fbff;
+ --site-secondary:#142b49;--site-on-secondary:#b9d8ff;
+ --site-background:#080f1d;--site-on-background:#e8efff;
+ --surface:#111d30;--surface-2:#172740;--ink:#e8efff;--muted:#91a4c2;
+ --line:#263a58;--green:#28c58b;--orange:#f2a94a;--red:#ff727c;--blue:#55a5ff;
+ color-scheme:dark;
+}
+html{background:#080f1d;scroll-behavior:smooth}
+body,#app{background:radial-gradient(ellipse at 15% -10%,#173968 0%,#0b1628 38%,#080f1d 75%)!important;color:#e8efff!important}
+.sidebar{background:linear-gradient(180deg,#102747 0%,#0b172a 100%)!important;border-right:1px solid #28405f;box-shadow:12px 0 40px #0003}
+.brand .logo{background:linear-gradient(145deg,#1678ed,#123a78);box-shadow:0 0 24px #1478ef55}
+.brand h1,.page-title,.section-title,.panel h3{color:#f3f7ff}
+.nav button{color:#9eb2d0;transition:background .25s ease,color .25s ease,transform .25s ease,box-shadow .25s ease}
+.nav button:hover{background:#1a3455;color:#fff;transform:translateX(3px)}
+.nav button.active{background:linear-gradient(100deg,#1769d2,#174b91)!important;color:#fff!important;box-shadow:0 7px 22px #1268d64d,inset 0 0 0 1px #64a9ff44}
+.sidebar-foot{background:#142943;border-color:#294362;color:#b7c8e0}
+.today,.cloud-indicator{background:#13233a;border-color:#2a4161;color:#b9c9e2}
+.btn{background:linear-gradient(135deg,#2584f5,#1454b5);box-shadow:0 7px 20px #0d63d344;border:1px solid #3c8df0;color:#fff;transition:transform .22s ease,box-shadow .22s ease,filter .22s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 25px #0d63d366;filter:brightness(1.08)}
+.btn:active{transform:scale(.97)}.btn.light{background:#172942;border:1px solid #334c6d;color:#dce9ff;box-shadow:none}.btn.danger{background:#3a202c;border:1px solid #693447;color:#ff9ba4}
+.metric,.panel,.auth-card,.modal{background:linear-gradient(145deg,#152640 0%,#101c30 75%)!important;border:1px solid #2a4162!important;box-shadow:0 12px 32px #0003,inset 0 1px #ffffff08!important;color:#e8efff}
+.metric{transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}.metric:hover{transform:translateY(-4px);border-color:#4778b3!important;box-shadow:0 18px 36px #0005,0 0 22px #1676d51b!important}
+.metric:after{background:#1e4d80!important;opacity:.25!important}.metric-icon{background:#173e69!important;color:#76b8ff!important}
+.metric-value{color:#fff}.metric-note,.crumb,.sub,.muted,.hint{color:#91a4c2!important}
+.pill,.notice{background:#173454!important;color:#c6e1ff!important;border:1px solid #2d527a}
+.chart{border-color:#314865;background:repeating-linear-gradient(to bottom,transparent 0,transparent 45px,#263b58 46px,#263b58 47px)}
+.bar{background:linear-gradient(180deg,#35d5a0,#138b75)!important;box-shadow:0 0 14px #20c99a44}.bar.alt{background:linear-gradient(180deg,#58b0ff,#1769d2)!important;box-shadow:0 0 14px #2385ff44}
+.line-chart .target-line{stroke:#29c997}.line-chart .actual-line{stroke:#58aaff}.line-chart .target-dot{fill:#29c997}.line-chart .actual-dot{fill:#58aaff}
+.fill{background:linear-gradient(90deg,#1769d2,#45b4ff)!important;box-shadow:0 0 12px #2689ff55}
+.table-panel{background:#111d30!important}.table-head{background:#13243b}th{background:#172943!important;color:#9fb5d5!important;border-color:#2a4162!important}td{color:#dce8fa!important;border-color:#263a58!important}tbody tr{transition:background .2s ease}tbody tr:hover{background:#1a304d!important}
+.search,.field input,.field select,.field textarea,select,input,textarea{background:#101e32;color:#e8efff;border-color:#304969}
+.search:focus,.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid #3288ef66;border-color:#4c9cf5}
+.field label{color:#a8bbd7}.detail-item{background:#172943;border:1px solid #2b4160}.map-box{background:#12233a;border-color:#355277}
+.status.on{background:#123c32;color:#68e1b4}.status.wait{background:#49351c;color:#ffd18a}.status.late{background:#49232d;color:#ff9ba4}
+.toast{background:#123d36;color:#c5ffeb;border:1px solid #277b68;box-shadow:0 12px 30px #0005}
+.modal-backdrop{background:#020814d9;backdrop-filter:blur(8px)}.modal{box-shadow:0 25px 90px #0009!important}
+#authGate{background:radial-gradient(ellipse at 50% 0%,#173d70,#080f1d 65%)}.auth-message{background:#173454;color:#c6e1ff}
+.page.active{animation:atiPageIn .38s cubic-bezier(.2,.75,.25,1) both}
+@keyframes atiPageIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.metric,.panel,.table-panel,.modal{animation:atiSurfaceIn .45s ease both}
+@keyframes atiSurfaceIn{from{opacity:.75;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+button:focus-visible{outline:2px solid #70b7ff;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+}
+@media screen and (max-width:720px){
+ .layout{padding-bottom:76px!important}
+ .sidebar{position:fixed!important;z-index:25;left:0;right:0;bottom:0;top:auto;width:100%;height:72px;padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;border-right:0;border-top:1px solid #2c4567;box-shadow:0 -10px 35px #0006;backdrop-filter:blur(18px);background:#0d1a2ded!important}
+ .sidebar>.brand,.sidebar>.sidebar-foot,.sidebar>div:first-of-type>.navlabel{display:none!important}
+ .sidebar>div:nth-child(2){width:100%;min-width:0}
+ .nav{display:flex!important;flex-direction:row!important;align-items:center;justify-content:space-around;gap:3px!important;overflow-x:auto;scrollbar-width:none}
+ .nav::-webkit-scrollbar{display:none}.nav>div.navlabel{display:none!important}
+ .nav button{flex:1 0 66px;min-width:58px;max-width:100px;justify-content:center;text-align:center;flex-direction:column;gap:3px;padding:7px 4px!important;font-size:9px!important;border-radius:12px!important;white-space:nowrap}
+ .nav button .ico{display:block!important;width:auto;font-size:17px;line-height:1.1}
+ .nav button.active{transform:translateY(-3px)}
+ main{padding:16px 12px 26px!important}
+ .topbar{gap:10px;margin-bottom:18px}.top-actions{flex-wrap:wrap;gap:7px}.top-actions .btn{flex:1}
+ #printCompany{margin-bottom:13px!important}#printCompany img{width:43px!important;height:43px!important;min-width:43px!important;min-height:43px!important}
+ .page-title{font-size:23px;letter-spacing:-.6px}.sub{font-size:11px}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ .metric{padding:13px!important;border-radius:16px!important}.metric-value{font-size:clamp(16px,4.5vw,20px)!important;white-space:normal;overflow-wrap:anywhere;margin:11px 0 5px!important}.metric-top{font-size:10px}.metric-note{font-size:9px}
+ .panel{padding:15px!important;border-radius:16px!important}.table-panel{padding:0!important}.table-head{padding:15px!important}
+ .toolbar{align-items:stretch}.toolbar>*{min-width:100%!important;max-width:100%!important}
+ .search{min-height:43px;font-size:13px!important}.form-grid{gap:11px}.field input,.field select,.field textarea{font-size:14px!important;min-height:43px}
+ .form-actions .btn{flex:1 1 auto;min-height:42px}.photo-grid{gap:8px}
+ .modal-backdrop{padding:9px!important;align-items:flex-end!important}.modal{width:100%!important;max-height:92dvh!important;border-radius:20px 20px 12px 12px!important;padding:18px!important}
+ .toast{left:12px;right:12px;bottom:86px;text-align:center}
+}
+@media print{
+ html,body,#app{background:#fff!important;color:#111!important}
+ .sidebar{display:none!important}main{padding:0!important}
+ .page.active{animation:none!important}.metric,.panel,.table-panel,.modal{animation:none!important;box-shadow:none!important;background:#fff!important;color:#111!important}
+}
+
 </style>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
